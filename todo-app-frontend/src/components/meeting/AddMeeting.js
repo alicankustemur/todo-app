@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Panel, Form, FormGroup, FormControl, Col, Button, ControlLabel} from 'react-bootstrap';
+import {Panel,  FormGroup, FormControl, Col, Button, ControlLabel} from 'react-bootstrap';
 
 import "../style.css";
 
@@ -9,8 +9,8 @@ export default class AddMeeting extends Component {
 
         return (
             <Panel bsStyle="primary" header="Add Meeting" className="panel">
-                <Form horizontal name="addMeetingForm" method="POST" action="meeting/add">
-                    <FormGroup>
+                <div className="form-horizontal">
+                <FormGroup>
                         <Col componentClass={ControlLabel} sm={2}>
                             Name
                         </Col>
@@ -53,7 +53,7 @@ export default class AddMeeting extends Component {
                             </Button>
                         </Col>
                     </FormGroup>
-                </Form>
+                </div>
             </Panel>
         );
     }
