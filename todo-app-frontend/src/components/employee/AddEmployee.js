@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Panel, ControlLabel, FormControl, FormGroup, Col, Button} from 'react-bootstrap';
-import jajax from "robe-ajax";
+import axios from 'axios';
 
 import "../style.css";
 
@@ -18,9 +18,6 @@ export default class AddEmployee extends Component {
     }
 
     render() {
-
-        console.log(this.state.name, this.state.surname);
-
         return (
             <Panel bsStyle="primary" header="Add Employee" className="panel">
                 <div className="form-horizontal">
@@ -79,21 +76,10 @@ export default class AddEmployee extends Component {
 
     __addEmployee(){
 
-        let data = {
+        axios.post(this.props.serviceUrl + "/add",{
             name : this.state.name,
             surname : this.state.surname,
             salary : this.state.salary
-        }
-
-        jajax.ajax({
-
-            url : "http://localhost:8082/mebitech-todoapp/employee/addTest",
-            method : "POST",
-            data : JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            crossDomain: true
-
 
         });
     }
