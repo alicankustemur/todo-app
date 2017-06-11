@@ -66,7 +66,6 @@ export default class EmployeeList extends Component {
         axios.delete(this.props.serviceUrl  + '/delete/' + id);
     }
 
-
 }
 
 
