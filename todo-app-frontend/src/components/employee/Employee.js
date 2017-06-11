@@ -5,7 +5,7 @@ import AddEmployee from "./AddEmployee";
 import "../style.css";
 import EmployeeList from "./EmployeeList";
 
-const serviceUrl = "http://localhost:8080/todo-app/employee/" ;
+const serviceUrl = "http://localhost:8080/todo-app/employee" ;
 
 export default class Employee extends Component {
 

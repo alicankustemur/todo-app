@@ -16,11 +16,9 @@ export default class EmployeeList extends Component {
     }
 
     componentDidMount() {
-        var _this = this;
-
         axios.get( this.props.serviceUrl + '/employees')
             .then(response => {
-                _this.setState({
+                this.setState({
                     employees: response.data
                 });
             });

@@ -5,17 +5,18 @@ import AddDepartment from "./AddDepartment";
 import "../style.css";
 import DepartmentList from "./DepartmentList";
 
+const serviceUrl = "http://localhost:8080/todo-app/department" ;
+
 export default class Department extends Component {
 
     render() {
-        console.log("calling department!");
         return (
             <Grid className="grid">
-                <Col lg="6">
-                    <AddDepartment/>
+                <Col lg={6}>
+                    <AddDepartment serviceUrl={serviceUrl}/>
                 </Col>
-                <Col lg="6">
-                    <DepartmentList/>
+                <Col lg={6}>
+                    <DepartmentList serviceUrl={serviceUrl}/>
                 </Col>
             </Grid>
         );

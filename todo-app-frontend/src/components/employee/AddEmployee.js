@@ -11,9 +11,9 @@ export default class AddEmployee extends Component {
         super(props);
 
         this.state = {
-            name: undefined,
-            surname: undefined,
-            salary: undefined
+            name: "",
+            surname: "",
+            salary: ""
         };
     }
 
@@ -26,7 +26,7 @@ export default class AddEmployee extends Component {
                         Name
                     </Col>
                     <Col sm={10}>
-                        <FormControl type="text" placeholder="Name" name="name" onChange={this.__handleChange}/>
+                        <FormControl type="text" placeholder="Name" name="name" value={this.state.name} onChange={this.__handleChange} />
                     </Col>
                 </FormGroup>
 
@@ -35,7 +35,7 @@ export default class AddEmployee extends Component {
                         Surname
                     </Col>
                     <Col sm={10}>
-                        <FormControl type="text" placeholder="Surname" name="surname" onChange={this.__handleChange}/>
+                        <FormControl type="text" placeholder="Surname" name="surname" value={this.state.surname} onChange={this.__handleChange} />
                     </Col>
                 </FormGroup>
 
@@ -44,20 +44,21 @@ export default class AddEmployee extends Component {
                         Salary
                     </Col>
                     <Col sm={10}>
-                        <FormControl type="input" placeholder="Salary" name="salary" onChange={this.__handleChange}/>
+                        <FormControl type="input" placeholder="Salary" name="salary" value={this.state.salary} onChange={this.__handleChange}/>
                     </Col>
                 </FormGroup>
 
                 <FormGroup>
                     <Col smOffset={2} lg={2}>
                         <Button bsStyle="primary" type="submit" className="addEmployeeButton"
-                                onClick={() => this.__addEmployee()}>
+                                onClick={() => this.__add()}>
                             Add
                         </Button>
                     </Col>
 
                     <Col lg={2}>
                         <Button bsStyle="warning" type="button" className="clearAddEmployeeButton"
+                                onClick = {() => this.__clear()}
                                 >
                             Clear
                         </Button>
@@ -74,7 +75,7 @@ export default class AddEmployee extends Component {
         this.setState(state);
     };
 
-    __addEmployee(){
+    __add(){
 
         axios.post(this.props.serviceUrl + "/add",{
             name : this.state.name,
@@ -83,6 +84,16 @@ export default class AddEmployee extends Component {
 
         });
     }
+
+
+    __clear = (e) => {
+        this.setState({
+            name : "",
+            surname : "",
+            salary : ""
+        });
+    }
+
 
 }
 
