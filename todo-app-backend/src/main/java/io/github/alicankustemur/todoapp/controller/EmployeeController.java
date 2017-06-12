@@ -3,6 +3,7 @@ package io.github.alicankustemur.todoapp.controller;
 import java.util.Date;
 import java.util.List;
 
+import io.github.alicankustemur.todoapp.controller.base.BaseController;
 import io.github.alicankustemur.todoapp.domain.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,77 +13,44 @@ import io.github.alicankustemur.todoapp.service.EmployeeService;
 
 @RestController
 @RequestMapping("/employee")
-public class EmployeeController {
+public class EmployeeController implements BaseController<Employee> {
 
     @Autowired
     private EmployeeService service;
 
-
-    @PostMapping("/addTest")
+    @PostMapping("/add")
+    @Override
     public void add(@RequestBody Employee employee) {
-
-        System.out.println(employee.getName());
-
+        service.saveOrUpdate(employee);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView index(ModelAndView modelAndView) {
-        modelAndView.setViewName("employee");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/employees", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Employee> employees() {
+    @GetMapping("/list")
+    @Override
+    public List<Employee> list() {
         return service.getAll();
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteEmployee(@PathVariable("id") Long id) {
+    @Override
+    public void delete(@PathVariable("id") Long id) {
+        Employee deletedEmployee = service.get(id);
+        deletedEmployee.setRecordIsDeleted(true);
+        deletedEmployee.setRecordUpdateTime(new Date());
 
-        Employee employee = service.get(id);
-        employee.setRecordIsDeleted(true);
-        employee.setRecordCreateTime(new Date());
-
-        service.saveOrUpdate(employee);
-
-        return "redirect:/employee";
+        service.saveOrUpdate(deletedEmployee);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addEmployee(@RequestParam("name") String name,
-                              @RequestParam("surname") String surname,
-                              @RequestParam("salary") Float salary) {
+    @PutMapping("/update/{id}")
+    @Override
+    public void update(@PathVariable("id") Long id,@RequestBody Employee employee) {
+        Employee willBeUpdatedEmployee = service.get(id);
 
-        Employee employee = new Employee();
-        employee.setName(name);
-        employee.setSurname(surname);
-        employee.setSalary(salary);
-        employee.setRecordIsDeleted(false);
-        employee.setRecordCreateTime(new Date());
+        willBeUpdatedEmployee.setName(employee.getName());
+        willBeUpdatedEmployee.setSurname(employee.getSurname());
+        willBeUpdatedEmployee.setSalary(employee.getSalary());
+        willBeUpdatedEmployee.setRecordUpdateTime(new Date());
 
-        service.saveOrUpdate(employee);
+        service.saveOrUpdate(willBeUpdatedEmployee);
 
-        return "redirect:/employee";
     }
-
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateEmployee(
-            @RequestParam("id") Long id,
-            @RequestParam("name") String name,
-            @RequestParam("surname") String surname,
-            @RequestParam("salary") Float salary) {
-
-        Employee employee = service.get(id);
-        employee.setName(name);
-        employee.setSurname(surname);
-        employee.setSalary(salary);
-        employee.setRecordUpdateTime(new Date());
-
-        service.saveOrUpdate(employee);
-
-        return "redirect:/employee";
-    }
-
-
 }

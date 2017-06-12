@@ -1,9 +1,9 @@
 package io.github.alicankustemur.todoapp.test.controller;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.github.alicankustemur.todoapp.domain.Employee;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,15 +33,15 @@ import io.github.alicankustemur.todoapp.controller.EmployeeController;
 import io.github.alicankustemur.todoapp.repository.EmployeeRepository;
 import io.github.alicankustemur.todoapp.service.EmployeeService;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class EmployeeControllerTest {
 
 	private MockMvc mockMvc;
 
 	@Mock
 	private EmployeeService service;
-	
+
 	@Mock
 	private EmployeeRepository repository;
 
@@ -50,96 +52,95 @@ public class EmployeeControllerTest {
 	@Autowired
 	private WebApplicationContext wac;
 
+	private final static String APPLICATION_URL = "http://localhost:3001/employee";
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
-	//@Test
-	public void testIndex() throws Exception {
+	@Test
+	public void givenEmployeeWhenSendPostRequestWithEmployeeThenAddNewEmployee() throws Exception {
+		Employee employee = new Employee();
+		employee.setId(1L);
+		employee.setName("Ali Can");
+		employee.setSurname("Kuştemur");
+		employee.setSalary(33f);
 
-		mockMvc.perform(get("/employee"))
-			.andExpect(status().isOk())
-			.andExpect(view().name("employee"));
+		ObjectMapper mapper = new ObjectMapper();
+
+		mockMvc.perform(post(APPLICATION_URL + "/add")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content( mapper.writeValueAsBytes(employee)))
+				.andExpect(status().isOk())
+				.andExpect(handler().handlerType(EmployeeController.class))
+				.andExpect(handler().methodName("add"));
 	}
 
-	
-	//@Test
-	public void testGetAllEmployees() throws Exception {
+	@Test
+	public void givenEmployeesWhenGoToListUrlThenGetEmployeeList() throws Exception {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(new Employee());
 		list.add(new Employee());
 		list.add(new Employee());
-		
+
 		when(service.getAll()).thenReturn(list);
-		
-		mockMvc.perform(get("/employee/employees")
-		   .contentType(MediaType.APPLICATION_JSON))
-	       .andExpect(jsonPath("$.*", hasSize(3)))
-	       .andExpect(status().isOk());
+
+		mockMvc.perform(get(APPLICATION_URL + "/list")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(jsonPath("$.*", hasSize(3)))
+				.andExpect(status().isOk())
+				.andExpect(handler().handlerType(EmployeeController.class))
+				.andExpect(handler().methodName("list"));
+
+
 	}
-	
-	
-//	@Test
-	public void testAddEmployee() throws Exception {
+
+	@Test
+	public void givenEmployeeIdWhenSendDeleteRequestWithIdThenDeleteThisEmployee() throws Exception{
+
 		Employee employee = new Employee();
 		employee.setId(1L);
 		employee.setName("Ali Can");
 		employee.setSurname("Kuştemur");
 		employee.setSalary(33f);
-		
-		mockMvc.perform(post("/employee/add")
-				.param("name", employee.getName())
-				.param("surname", employee.getSurname())
-				.param("salary", employee.getSalary().toString()))
-				.andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/employee"))
-                .andExpect(handler().handlerType(EmployeeController.class))
-                .andExpect(handler().methodName("addEmployee"))
-                .andReturn();
-	}
-	
-	//@Test
-	public void testUpdateEmployee() throws Exception{
-		
-		Employee employee = new Employee();
-		employee.setName("Ali Can");
-		employee.setSurname("Kuştemur");
-		employee.setSalary(33f);
-		
+
 		when(service.get(1L)).thenReturn(employee);
-		
-		mockMvc.perform(post("/employee/update")
-				.param("id", "1")
-				.param("name", employee.getName())
-				.param("surname", employee.getSurname())
-				.param("salary",employee.getSalary().toString()))
-				.andExpect(status().is3xxRedirection())
-		        .andExpect(view().name("redirect:/employee"))
-		        .andExpect(handler().handlerType(EmployeeController.class))
-		        .andExpect(handler().methodName("updateEmployee"))
-		        .andReturn();
+
+		mockMvc.perform(delete(APPLICATION_URL + "/delete/{id}", 1L))
+				.andExpect(status().isOk())
+				.andExpect(handler().handlerType(EmployeeController.class))
+				.andExpect(handler().methodName("delete"));
+
+
 	}
-	
-//	@Test
-	public void testDeleteEmployee() throws Exception{
-		
+
+	@Test
+	public void givenEmployeeIdAndEmployeeWhenSendPutRequesWithEmployeeIdAndEmployeeThenUpdateEmployeeWhoseIdIsThisEmployeeId() throws Exception{
+
 		Employee employee = new Employee();
 		employee.setId(1L);
 		employee.setName("Ali Can");
 		employee.setSurname("Kuştemur");
 		employee.setSalary(33f);
-		
+
 		when(service.get(1L)).thenReturn(employee);
-		
-		mockMvc.perform(get("/employee/delete/{id}", 1L))
-				.andExpect(status().is3xxRedirection())
-		        .andExpect(view().name("redirect:/employee"))
-		        .andExpect(handler().handlerType(EmployeeController.class))
-		        .andExpect(handler().methodName("deleteEmployee"))
-		        .andReturn();
+
+		Employee updatedEmployee = employee;
+		employee.setName("Özcan");
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		mockMvc.perform(put(APPLICATION_URL + "/update/{id}", 1L)
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content( mapper.writeValueAsBytes(updatedEmployee)))
+				.andExpect(status().isOk())
+				.andExpect(handler().handlerType(EmployeeController.class))
+				.andExpect(handler().methodName("update"));
+
 	}
-	
+
+
 
 }
