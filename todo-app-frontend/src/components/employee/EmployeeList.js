@@ -3,11 +3,7 @@ import {Panel, Table,Button} from 'react-bootstrap';
 
 export default class EmployeeList extends Component {
 
-    constructor(props){
-        super(props);
-    }
-
-    render() {
+     render() {
 
         return (
             <Panel header="Employee List" className="panel">
@@ -20,14 +16,14 @@ export default class EmployeeList extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {this.__renderTable()}
+                    {this._rows()}
                     </tbody>
                 </Table>
             </Panel>
         );
     }
 
-    __renderTable = () => {
+    _rows = () => {
         let employees = this.props.employees;
         let rows = [];
         for (let i = 0; i < employees.length; i++) {

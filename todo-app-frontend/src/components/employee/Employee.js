@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Col, Grid, Panel, Table, Button, ControlLabel, FormControl, FormGroup,} from 'react-bootstrap';
+import {Col, Grid} from 'react-bootstrap';
 import axios from 'axios';
 import toast from 'pre-toast/lib/Toast';
 import EmployeeList from "./EmployeeList";
