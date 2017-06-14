@@ -22,9 +22,7 @@ export default class EmployeeList extends Component {
                     <tbody>
                     {this.__renderTable()}
                     </tbody>
-
                 </Table>
-                <Button onClick={this.__buttonClick}></Button>
             </Panel>
         );
     }
@@ -49,17 +47,6 @@ export default class EmployeeList extends Component {
 
         return rows;
     };
-
-    __buttonClick = () => {
-        let name = "alican";
-
-        if(this.props.alican)
-            this.props.alican(name);
-    };
-
-
-
-
 
 
 }

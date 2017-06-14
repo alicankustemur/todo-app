@@ -34,7 +34,7 @@ export default class Employee extends Component {
                 </Col>
                 <Col lg={6}>
                     <EmployeeList employees={this.state.employees} serviceUrl={serviceUrl} onDelete={this.__delete}
-                                  onUpdate={this.__update} alican={this.__alican}/>
+                                  onUpdate={this.__update} />
                 </Col>
             </Grid>
         );
