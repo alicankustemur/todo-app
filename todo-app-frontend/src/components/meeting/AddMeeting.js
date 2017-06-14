@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Panel,  FormGroup, FormControl, Col, Button, ControlLabel} from 'react-bootstrap';
-import axios from "axios";
+import {Panel, FormGroup, FormControl, Col, Button, ControlLabel} from 'react-bootstrap';
 
 import "../style.css";
 
@@ -10,35 +9,27 @@ export default class AddMeeting extends Component {
         super(props);
 
         this.state = {
-            name: "",
-            description: "",
-            department: "",
-            departments : []
+            meeting: this.props.meeting,
+            departments: this.props.departments
         };
     }
 
-    componentDidMount() {
-        var _this = this;
-
-        axios.get( "http://localhost:8080/todo-app/department/departments")
-            .then(response => {
-                _this.setState({
-                    departments: response.data
-                });
-            });
-    }
 
     render() {
 
+        let operationText = this.state.meeting.id ? "Update" : "Add";
+        let bsStyle = this.state.meeting.id ? "success" : "primary";
+
         return (
-            <Panel bsStyle="primary" header="Add Meeting" className="panel">
+            <Panel bsStyle={bsStyle} header={operationText + " Meeting"} className="panel">
                 <div className="form-horizontal">
-                <FormGroup>
+                    <FormGroup>
                         <Col componentClass={ControlLabel} sm={2}>
                             Name
                         </Col>
                         <Col sm={10}>
-                            <FormControl type="input" placeholder="Name" name="name" value={this.state.name} required onChange={this.__handleChange}/>
+                            <FormControl type="input" placeholder="Name" name="name" value={this.state.meeting.name}
+                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
                         </Col>
                     </FormGroup>
 
@@ -47,8 +38,9 @@ export default class AddMeeting extends Component {
                             Description
                         </Col>
                         <Col sm={10}>
-                            <FormControl componentClass="textarea" rows="4" placeholder="Description" name="description" value={this.state.description}
-                                         required onChange={this.__handleChange}/>
+                            <FormControl componentClass="textarea" rows="4" placeholder="Description" name="description"
+                                         value={this.state.meeting.description}
+                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
                         </Col>
                     </FormGroup>
                     <FormGroup>
@@ -56,25 +48,22 @@ export default class AddMeeting extends Component {
                             Department
                         </Col>
                         <Col sm={10}>
-                            <select className="form-control departmentsDropDown" name="department" value={this.state.department} required onChange={this.__handleChange}>
-                                {
-                                    this.state.departments.map((department, index) =>
-                                        <option key={index} value={department.id}>{department.name}</option>
-                                    )
-                                }
+                            <select className="form-control" name="department"
+                                    value={this.state.meeting.department} onChange={this.__handleChange}>
+                                {this._departmentOptions()}
                             </select>
                         </Col>
                     </FormGroup>
-                    <FormControl type="hidden" name="id"/>
                     <FormGroup>
-                        <Col smOffset={2} lg={2}>
-                            <Button bsStyle="primary" type="submit" className="addMeetingButton">
-                                Add
+                        <Col lg={2 } xs={2} xsPush={3}>
+                            <Button bsStyle={bsStyle} type="submit"
+                                    onClick={this.props.addOrUpdate.bind(this, this.state.meeting)}>
+                                {operationText}
                             </Button>
                         </Col>
-
-                        <Col lg={2}>
-                            <Button bsStyle="warning" type="button" className="clearMeetingButton" onClick = {() => this.__clear()}>
+                        <Col lg={2} xs={2} xsPush={4}>
+                            <Button bsStyle="warning" type="button"
+                                    onClick={this.props.onClear.bind(this)}>
                                 Clear
                             </Button>
                         </Col>
@@ -84,19 +73,35 @@ export default class AddMeeting extends Component {
         );
     }
 
+    __onEnterClick = (event) => {
+        if (event.key === "Enter") {
+            this.props.addOrUpdate(this.state.department);
+        }
+    };
+
     __handleChange = (e) => {
-        let state = {};
-        state[e.target.name] = e.target.value;
+        let state = {
+            meeting: this.state.meeting
+        };
+        state.meeting[e.target.name] = e.target.value;
         this.setState(state);
     };
 
-    __clear = (e) => {
-        this.setState({
-            name : "",
-            description : "",
-            department : ""
-        });
-    }
+    _departmentOptions = () => {
+        let departments = this.state.departments;
+        let rows = [];
+        for (let i = 0; i < departments.length; i++) {
+            let department = departments[i];
+            rows.push(<option key={i} value={department.id}>{department.name}</option>);
+        }
+
+        return rows;
+    };
+
+    componentWillReceiveProps = (nextProps) => {
+        this.setState({meeting: nextProps.meeting, departments: nextProps.departments});
+    };
+
 }
 
 

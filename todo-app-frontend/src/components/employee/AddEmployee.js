@@ -18,23 +18,23 @@ export default class AddEmployee extends Component {
         let bsStyle = this.state.employee.id ? "success" : "primary";
 
         return (
-            <Panel bsStyle={bsStyle} header={operationText + " Employee"} className="panel" >
+            <Panel bsStyle={bsStyle} header={operationText + " Employee"} className="panel">
                 <div className="form-horizontal">
                     <FormGroup>
-                        <Col componentClass={ControlLabel} sm={2}>
+                        <Col componentClass={ControlLabel} lg={2}>
                             Name
                         </Col>
-                        <Col sm={10}>
+                        <Col lg={10}>
                             <FormControl type="text" placeholder="Name" name="name" value={this.state.employee.name}
-                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick} />
+                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
                         </Col>
                     </FormGroup>
 
                     <FormGroup>
-                        <Col componentClass={ControlLabel} sm={2}>
+                        <Col componentClass={ControlLabel} lg={2}>
                             Surname
                         </Col>
-                        <Col sm={10}>
+                        <Col lg={10}>
                             <FormControl type="text" placeholder="Surname" name="surname"
                                          value={this.state.employee.surname} onChange={this.__handleChange}
                                          onKeyPress={this.__onEnterClick}/>
@@ -42,33 +42,29 @@ export default class AddEmployee extends Component {
                     </FormGroup>
 
                     <FormGroup>
-                        <Col componentClass={ControlLabel} sm={2}>
+                        <Col componentClass={ControlLabel} lg={2}>
                             Salary
                         </Col>
-                        <Col sm={10}>
+                        <Col lg={10}>
                             <FormControl type="input" placeholder="Salary" name="salary"
                                          value={this.state.employee.salary} onChange={this.__handleChange}
                                          onKeyPress={this.__onEnterClick}/>
                         </Col>
                     </FormGroup>
-
                     <FormGroup>
-                        <Col smOffset={2} lg={2}>
-                            <Button bsStyle={bsStyle} type="submit" className="addEmployeeButton"
+                        <Col lg={2 } xs={2} xsPush={3}>
+                            <Button bsStyle={bsStyle} type="submit"
                                     onClick={this.props.addOrUpdate.bind(this, this.state.employee)}>
                                 {operationText}
                             </Button>
                         </Col>
-
-                        <Col lg={2}>
-                            <Button bsStyle="warning" type="button" className="clearAddEmployeeButton"
+                        <Col lg={2} xs={2} xsPush={4}>
+                            <Button bsStyle="warning" type="button"
                                     onClick={this.props.onClear.bind(this)}>
                                 Clear
                             </Button>
                         </Col>
                     </FormGroup>
-
-
                 </div>
             </Panel>
         );
@@ -79,7 +75,6 @@ export default class AddEmployee extends Component {
             this.props.addOrUpdate(this.state.employee);
         }
     };
-
 
 
     __handleChange = (e) => {

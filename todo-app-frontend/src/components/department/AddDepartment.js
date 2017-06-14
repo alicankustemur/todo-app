@@ -55,15 +55,14 @@ export default class AddDepartment extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup>
-                        <Col smOffset={2} lg={2}>
-                            <Button bsStyle={bsStyle} type="submit" className="addDepartmentButton"
+                        <Col lg={2 } xs={2} xsPush={3}>
+                            <Button bsStyle={bsStyle} type="submit"
                                     onClick={this.props.addOrUpdate.bind(this, this.state.department)}>
                                 {operationText}
                             </Button>
                         </Col>
-
-                        <Col lg={2}>
-                            <Button bsStyle="warning" type="button" className="cleDepartmentButton"
+                        <Col lg={2} xs={2} xsPush={4}>
+                            <Button bsStyle="warning" type="button"
                                     onClick={this.props.onClear.bind(this)}>
                                 Clear
                             </Button>

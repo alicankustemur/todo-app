@@ -29,7 +29,7 @@ export default class Department extends Component {
         return (
             <Grid className="grid">
                 <Col lg={6}>
-                    <AddDepartment serviceUrl={serviceUrl} department={this.state.department}
+                    <AddDepartment department={this.state.department}
                                    employees={this.state.employees}
                                    addOrUpdate={this.__addOrUpdate} onClear={this._clear}/>
                 </Col>
@@ -83,12 +83,12 @@ export default class Department extends Component {
 
     }
 
-    _getEmployeeById(id){
+    _getEmployeeById(id) {
         let employees = this.state.employees;
-        for(let i=0; i< employees.length; i++){
+        for (let i = 0; i < employees.length; i++) {
             let employee = employees[i];
 
-            if(id === employee.id.toString()){
+            if (id === employee.id.toString()) {
                 return employee;
             }
         }

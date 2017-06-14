@@ -1,27 +1,9 @@
 import React, {Component} from 'react';
-import {Panel,Table,Button} from 'react-bootstrap';
-import axios from "axios";
+import {Panel, Table, Button} from 'react-bootstrap';
 
 import "../style.css";
 
 export default class MeetingList extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            meetings: []
-        };
-
-    }
-
-    componentDidMount(){
-        axios.get( this.props.serviceUrl + '/meetings')
-            .then(response => {
-                this.setState({
-                    meetings: response.data
-                });
-            });
-    }
 
     render() {
 
@@ -29,38 +11,40 @@ export default class MeetingList extends Component {
             <Panel header="Meeting List" className="panel">
                 <Table className="table">
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Department</th>
-                        </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Department</th>
+                    </tr>
                     </thead>
                     <tbody>
-                    {
-                        this.state.meetings.map((meeting,index) =>
-                         <tr key={index} >
-                             <td>{meeting.name}</td>
-                             <td>{meeting.description}</td>
-                             <td>{meeting.department.name}</td>
-                             <td>
-                                 <Button bsStyle="danger"
-                                         onClick={ () => this.__delete(meeting.id)}>Delete</Button>
-                             </td>
-                             <td>
-                                 <Button bsStyle="success">Update</Button>
-                             </td>
-                         </tr>
-                        )
-                    }
+                    {this._rows()}
                     </tbody>
                 </Table>
             </Panel>
         );
     }
 
-    __delete(id) {
-        axios.delete(this.props.serviceUrl  + '/delete/' + id);
-    }
+    _rows = () => {
+        let meetings = this.props.meetings;
+        let rows = [];
+        for (let i = 0; i < meetings.length; i++) {
+            let meeting = meetings[i];
+            rows.push(<tr key={i}>
+                <td>{meeting.name}</td>
+                <td>{meeting.description}</td>
+                <td>{meeting.department.name}</td>
+                <td>
+                    <Button bsStyle="danger" onClick={ this.props.onDelete.bind(this, meeting.id) }>Delete</Button>
+                </td>
+                <td>
+                    <Button bsStyle="success" onClick={ this.props.onUpdate.bind(this, meeting) }>Update</Button>
+                </td>
+            </tr>);
+        }
+
+        return rows;
+    };
 }
 
 
