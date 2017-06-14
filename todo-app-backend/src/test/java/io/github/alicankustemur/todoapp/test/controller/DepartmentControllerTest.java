@@ -1,17 +1,6 @@
 package io.github.alicankustemur.todoapp.test.controller;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.alicankustemur.todoapp.Application;
 import io.github.alicankustemur.todoapp.controller.DepartmentController;
 import io.github.alicankustemur.todoapp.domain.Department;
@@ -29,168 +18,163 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class DepartmentControllerTest {
 
-	private MockMvc mockMvc;
-	
-	@Mock
-	private EmployeeService employeeService;
-	
-	@Mock
-	private DepartmentService service;
+    private MockMvc mockMvc;
 
-	@InjectMocks
-	@Autowired
-	private DepartmentController controller;
+    @Mock
+    private EmployeeService employeeService;
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Mock
+    private DepartmentService service;
 
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-	}
-	
-	
-	@Test
-	public void testGetAllDepartments() throws Exception {
-		List<Department> list = new ArrayList<Department>();
-		list.add(new Department());
-		list.add(new Department());
-		
-		when(service.getAll()).thenReturn(list);
-		
-		mockMvc.perform(get("/department/departments")
-		   .contentType(MediaType.APPLICATION_JSON))
-	       .andExpect(jsonPath("$.*", hasSize(2)))
-	       .andExpect(status().isOk());
-	}
-	
-	@Test
-	public void testDeleteDepartment() throws Exception{
-		Department department = new Department();
-		department.setId(1L);
-		department.setName("Department 1");
-		
-		when(service.get(1L)).thenReturn(department);
-		
-		mockMvc.perform(get("/department/delete/{id}",1L))
-						.andExpect(status().is3xxRedirection())
-				        .andExpect(view().name("redirect:/department"))
-				        .andExpect(handler().handlerType(DepartmentController.class))
-				        .andExpect(handler().methodName("deleteDepartment"))
-				        .andReturn();
-	}
-	
-	@Test
-	public void testAddDepartment() throws Exception{
-		Employee employee = new Employee();
-		employee.setId(1L);
-		employee.setName("Ali Can");
-		employee.setSurname("Kuştemur");
-		employee.setSalary(33f);
-		
-		when(employeeService.get(1L)).thenReturn(employee);
-		when(service.isItAvailableDepartmentWithThisEmployee(employee)).thenReturn(false);
-		
-		mockMvc.perform(post("/department/add")
-				.param("name", "Department 1")
-				.param("description", "Lorem ipsum dolor sit amet")
-				.param("employee", "1"))
-				.andExpect(status().is3xxRedirection())
-		        .andExpect(view().name("redirect:/department"))
-		        .andExpect(handler().handlerType(DepartmentController.class))
-		        .andExpect(handler().methodName("addDepartment"))
-		        .andReturn();
-		
-	}
-	
-	@Test
-	public void testAddDepartmentError() throws Exception{
-		Employee employee = new Employee();
-		employee.setId(1L);
-		employee.setName("Ali Can");
-		employee.setSurname("Kuştemur");
-		employee.setSalary(33f);
-		
-		when(employeeService.get(1L)).thenReturn(employee);
-		when(service.isItAvailableDepartmentWithThisEmployee(employee)).thenReturn(true);
-		
-		mockMvc.perform(post("/department/add")
-				.param("name", "Department 1")
-				.param("description", "Lorem ipsum dolor sit amet")
-				.param("employee", "1"))
-				.andExpect(status().is3xxRedirection())
-		        .andExpect(view().name("redirect:/department?error=availableDepartment"))
-		        .andExpect(handler().handlerType(DepartmentController.class))
-		        .andExpect(handler().methodName("addDepartment"))
-		        .andReturn();
-		
-	}
-	
-	@Test
-	public void testUpdateDepartment() throws Exception{
-		Employee employee = new Employee();
-		employee.setId(1L);
-		employee.setName("Ali Can");
-		employee.setSurname("Kuştemur");
-		employee.setSalary(33f);
-		
-		Department department = new Department();
-		department.setId(1L);
-		
-		when(employeeService.get(1L)).thenReturn(employee);
-		when(service.isItAvailableDepartmentWithThisEmployee(employee)).thenReturn(false);
-		when(service.get(1L)).thenReturn(department);
-		
-		mockMvc.perform(post("/department/update")
-				.param("id", "1")
-				.param("name", "Department 1")
-				.param("description", "Lorem ipsum dolor sit amet")
-				.param("employee", "1"))
-				.andExpect(status().is3xxRedirection())
-		        .andExpect(view().name("redirect:/department"))
-		        .andExpect(handler().handlerType(DepartmentController.class))
-		        .andExpect(handler().methodName("updateDepartment"))
-		        .andReturn();
-		
-	}
-	
-	@Test
-	public void testUpdateDepartmentError() throws Exception{
-		Employee employee = new Employee();
-		employee.setId(1L);
-		employee.setName("Ali Can");
-		employee.setSurname("Kuştemur");
-		employee.setSalary(33f);
-		
-		Department department = new Department();
-		department.setId(1L);
-		
-		when(employeeService.get(1L)).thenReturn(employee);
-		when(service.isItAvailableDepartmentWithThisEmployee(employee)).thenReturn(true);
-		
-		mockMvc.perform(post("/department/update")
-				.param("id", "1")
-				.param("name", "Department 1")
-				.param("description", "Lorem ipsum dolor sit amet")
-				.param("employee", "1"))
-				.andExpect(status().is3xxRedirection())
-		        .andExpect(view().name("redirect:/department?error=availableDepartment"))
-		        .andExpect(handler().handlerType(DepartmentController.class))
-		        .andExpect(handler().methodName("updateDepartment"))
-		        .andReturn();
-		
-	}
-	
-	
+    @InjectMocks
+    @Autowired
+    private DepartmentController controller;
+
+    @Autowired
+    private WebApplicationContext wac;
+
+    private final static String APPLICATION_URL = "http://localhost:8080/todo-app/department";
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+    }
+
+
+    // Feature : Department Operations
+    // Scenario : User want to add a department
+    @Test
+    public void givenDepartmentInformationsAndOneEmployeeWhenSendPostRequestWithDepartmentThenAddNewDepartment() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+
+        mockMvc.perform(post(APPLICATION_URL + "/add")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapper.writeValueAsBytes(getDepartment())))
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(DepartmentController.class))
+                .andExpect(handler().methodName("add"));
+
+    }
+
+    // Feature : Department Operations
+    // Scenario : User want to show department list
+    @Test
+    public void givenDepartmentsWhenGoToListUrlThenGetDepartmentList() throws Exception {
+        List<Department> list = new ArrayList<Department>();
+        list.add(new Department());
+        list.add(new Department());
+        list.add(new Department());
+
+        when(service.getAll()).thenReturn(list);
+
+        mockMvc.perform(get(APPLICATION_URL + "/list")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.*", hasSize(3)))
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(DepartmentController.class))
+                .andExpect(handler().methodName("list"));
+
+    }
+
+
+    // Feature : Department Operations
+    // Scenario : User want to delete a department
+    @Test
+    public void givenDepartmentIdWhenSendDeleteRequestWithIdThenDeleteThisDepartment() throws Exception {
+
+        when(service.get(1L)).thenReturn(getDepartment());
+
+        mockMvc.perform(delete(APPLICATION_URL + "/delete/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(DepartmentController.class))
+                .andExpect(handler().methodName("delete"));
+    }
+
+    // Feature : Department Operations
+    // Scenario : User want to update a department
+    @Test
+    public void givenDepartmentIdAndDepartmentWhenSendPutRequesWithDepartmentIdAndEmployeeThenUpdateDepartmentWhoseIdIsThisDepartmentId() throws Exception {
+
+        when(employeeService.get(1L)).thenReturn(getDepartment().getEmployee());
+        when(service.isItAvailableDepartmentWithThisEmployee(getDepartment().getEmployee())).thenReturn(false);
+        when(service.get(1L)).thenReturn(getDepartment());
+
+        Department updatedDepartment = getDepartment();
+        updatedDepartment.setName("Goblins");
+        updatedDepartment.setRecordUpdateTime(new Date());
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        mockMvc.perform(put(APPLICATION_URL + "/update/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapper.writeValueAsBytes(updatedDepartment)))
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(DepartmentController.class))
+                .andExpect(handler().methodName("update"));
+
+    }
+
+
+    public Department getDepartment() {
+        Employee employee = new Employee();
+        employee.setId(1000000L);
+        employee.setName("Frodo");
+        employee.setSurname("Baggins");
+        employee.setSalary(15f);
+
+        Department department = new Department();
+        department.setId(100000L);
+        department.setName("Baggins");
+        department.setDescription("The Baggins clan traced their origin to the first recorded Baggins, one Balbo Baggins, who was born in or near Hobbiton in S.R. 1167.");
+        department.setRecordCreateTime(new Date());
+        department.setEmployee(employee);
+
+        return department;
+    }
+
+    public Department getAnotherDepartment() {
+        Employee employee = new Employee();
+        employee.setId(999L);
+        employee.setName("Frodo");
+        employee.setSurname("Baggins");
+        employee.setSalary(15f);
+
+        Department department = new Department();
+        department.setId(999L);
+        department.setName("Elfs");
+        department.setDescription("The Baggins clan traced their origin to the first recorded Baggins, one Balbo Baggins, who was born in or near Hobbiton in S.R. 1167.");
+        department.setRecordCreateTime(new Date());
+        department.setEmployee(employee);
+
+        return department;
+    }
+
+
 }

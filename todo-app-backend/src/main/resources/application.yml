@@ -3,14 +3,14 @@ server:
   context-path: /todo-app
 
 spring:
-
+  profiles:
+    active: default
   datasource:
     url: jdbc:mysql://localhost:3306/todoapp?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
     tomcat:
       connection-properties: useUnicode=true;characterEncoding=utf-8;
     username: root
     password: 12345
-
   jpa:
     hibernate:
       dialect: org.hibernate.dialect.MySQLDialect
@@ -20,7 +20,12 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+---
 
+spring:
+  profiles: init
 
-
-
+  jpa:
+    hibernate:
+      ddl-auto: create
+      show-sql: true

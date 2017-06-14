@@ -22,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.github.alicankustemur.todoapp.domain.Meeting;
-import io.github.alicankustemur.todoapp.service.CreateTestDataService;
+import io.github.alicankustemur.todoapp.service.InitializeService;
 import io.github.alicankustemur.todoapp.service.MeetingService;
 
 @RunWith(SpringRunner.class)
@@ -40,7 +40,7 @@ public class CreateTestDataServiceTest {
 
 	@InjectMocks
 	@Autowired
-	private CreateTestDataService service;
+	private InitializeService service;
 
 	@Test
 	public void testCreate() throws Exception {

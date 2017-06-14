@@ -6,6 +6,7 @@ import java.util.List;
 import io.github.alicankustemur.todoapp.controller.base.BaseController;
 import io.github.alicankustemur.todoapp.domain.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,8 +21,10 @@ public class EmployeeController implements BaseController<Employee> {
 
     @PostMapping("/add")
     @Override
-    public void add(@RequestBody Employee employee) {
-        service.saveOrUpdate(employee);
+    public Employee add(@RequestBody Employee employee) {
+        employee.setRecordIsDeleted(false);
+        employee.setRecordCreateTime(new Date());
+         return service.saveOrUpdate(employee).orElse(null);
     }
 
     @GetMapping("/list")
@@ -42,7 +45,7 @@ public class EmployeeController implements BaseController<Employee> {
 
     @PutMapping("/update/{id}")
     @Override
-    public void update(@PathVariable("id") Long id,@RequestBody Employee employee) {
+    public ResponseEntity<?> update(@PathVariable("id") Long id,@RequestBody Employee employee) {
         Employee willBeUpdatedEmployee = service.get(id);
 
         willBeUpdatedEmployee.setName(employee.getName());
@@ -52,5 +55,7 @@ public class EmployeeController implements BaseController<Employee> {
 
         service.saveOrUpdate(willBeUpdatedEmployee);
 
+        return ResponseEntity.ok("");
     }
+
 }

@@ -1,27 +1,10 @@
 import React, {Component} from 'react';
-import {Panel, Table, Button} from 'react-bootstrap';
-import axios from 'axios';
-
-import "../style.css";
+import {Panel, Table,Button} from 'react-bootstrap';
 
 export default class EmployeeList extends Component {
 
-
-    constructor(props) {
+    constructor(props){
         super(props);
-        this.state = {
-            employees: []
-        };
-
-    }
-
-    componentDidMount() {
-        axios.get( this.props.serviceUrl + '/employees')
-            .then(response => {
-                this.setState({
-                    employees: response.data
-                });
-            });
     }
 
     render() {
@@ -37,32 +20,47 @@ export default class EmployeeList extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {
-                        this.state.employees.map((employee, index) =>
-                            <tr key={index}>
-                                <td>{employee.name}</td>
-                                <td>{employee.surname}</td>
-                                <td>{employee.salary}</td>
-                                <td>
-                                    <Button bsStyle="danger"
-                                            onClick={ () => this.__delete(employee.id)}>Delete</Button>
-                                </td>
-                                <td>
-                                    <Button bsStyle="success">Update</Button>
-                                </td>
-                            </tr>
-                        )
-                    }
+                    {this.__renderTable()}
                     </tbody>
 
                 </Table>
+                <Button onClick={this.__buttonClick}></Button>
             </Panel>
         );
     }
 
-    __delete(id) {
-        axios.delete(this.props.serviceUrl  + '/delete/' + id);
-    }
+    __renderTable = () => {
+        let employees = this.props.employees;
+        let rows = [];
+        for (let i = 0; i < employees.length; i++) {
+            let employee = employees[i];
+            rows.push(<tr key={i}>
+                <td>{employee.name}</td>
+                <td>{employee.surname}</td>
+                <td>{employee.salary}</td>
+                <td>
+                    <Button bsStyle="danger" onClick={ this.props.onDelete.bind(this, employee.id) }>Delete</Button>
+                </td>
+                <td>
+                    <Button bsStyle="success" onClick={ this.props.onUpdate.bind(this, employee) }>Update</Button>
+                </td>
+            </tr>);
+        }
+
+        return rows;
+    };
+
+    __buttonClick = () => {
+        let name = "alican";
+
+        if(this.props.alican)
+            this.props.alican(name);
+    };
+
+
+
+
+
 
 }
 

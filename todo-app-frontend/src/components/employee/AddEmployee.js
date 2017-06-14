@@ -1,99 +1,102 @@
 import React, {Component} from 'react';
-import {Panel, ControlLabel, FormControl, FormGroup, Col, Button} from 'react-bootstrap';
-import axios from 'axios';
-
-import "../style.css";
+import {Panel, Button, FormControl, FormGroup, Col, ControlLabel} from 'react-bootstrap';
 
 export default class AddEmployee extends Component {
-
 
     constructor(props) {
         super(props);
 
         this.state = {
-            name: "",
-            surname: "",
-            salary: ""
+            employee: this.props.employee
         };
+
     }
 
     render() {
+
+        let operationText = this.state.id ? "Update" : "Add";
+        let bsStyle = this.state.id ? "success" : "primary";
+
         return (
-            <Panel bsStyle="primary" header="Add Employee" className="panel">
+            <Panel bsStyle={bsStyle} header={operationText + " Employee"} className="panel" >
                 <div className="form-horizontal">
-                <FormGroup>
-                    <Col componentClass={ControlLabel} sm={2}>
-                        Name
-                    </Col>
-                    <Col sm={10}>
-                        <FormControl type="text" placeholder="Name" name="name" value={this.state.name} onChange={this.__handleChange} />
-                    </Col>
-                </FormGroup>
+                    <FormGroup>
+                        <Col componentClass={ControlLabel} sm={2}>
+                            Name
+                        </Col>
+                        <Col sm={10}>
+                            <FormControl type="text" placeholder="Name" name="name" value={this.state.employee.name}
+                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick} />
+                        </Col>
+                    </FormGroup>
 
-                <FormGroup>
-                    <Col componentClass={ControlLabel} sm={2}>
-                        Surname
-                    </Col>
-                    <Col sm={10}>
-                        <FormControl type="text" placeholder="Surname" name="surname" value={this.state.surname} onChange={this.__handleChange} />
-                    </Col>
-                </FormGroup>
+                    <FormGroup>
+                        <Col componentClass={ControlLabel} sm={2}>
+                            Surname
+                        </Col>
+                        <Col sm={10}>
+                            <FormControl type="text" placeholder="Surname" name="surname"
+                                         value={this.state.employee.surname} onChange={this.__handleChange}
+                                         onKeyPress={this.__onEnterClick}/>
+                        </Col>
+                    </FormGroup>
 
-                <FormGroup>
-                    <Col componentClass={ControlLabel} sm={2}>
-                        Salary
-                    </Col>
-                    <Col sm={10}>
-                        <FormControl type="input" placeholder="Salary" name="salary" value={this.state.salary} onChange={this.__handleChange}/>
-                    </Col>
-                </FormGroup>
+                    <FormGroup>
+                        <Col componentClass={ControlLabel} sm={2}>
+                            Salary
+                        </Col>
+                        <Col sm={10}>
+                            <FormControl type="input" placeholder="Salary" name="salary"
+                                         value={this.state.employee.salary} onChange={this.__handleChange}
+                                         onKeyPress={this.__onEnterClick}/>
+                        </Col>
+                    </FormGroup>
 
-                <FormGroup>
-                    <Col smOffset={2} lg={2}>
-                        <Button bsStyle="primary" type="submit" className="addEmployeeButton"
-                                onClick={() => this.__add()}>
-                            Add
-                        </Button>
-                    </Col>
+                    <FormGroup>
+                        <Col smOffset={2} lg={2}>
+                            <Button bsStyle={bsStyle} type="submit" className="addEmployeeButton"
+                                    onClick={this.props.addOrUpdate.bind(this, this.state.employee)}>
+                                {operationText}
+                            </Button>
+                        </Col>
 
-                    <Col lg={2}>
-                        <Button bsStyle="warning" type="button" className="clearAddEmployeeButton"
-                                onClick = {() => this.__clear()}
-                                >
-                            Clear
-                        </Button>
-                    </Col>
-                </FormGroup>
+                        <Col lg={2}>
+                            <Button bsStyle="warning" type="button" className="clearAddEmployeeButton"
+                                    onClick={this.props.onClear.bind(this)}>
+                                Clear
+                            </Button>
+                        </Col>
+                    </FormGroup>
+
+
                 </div>
             </Panel>
         );
     }
 
-    __handleChange = (e) => {
-        let state = {};
-        state[e.target.name] = e.target.value;
-        this.setState(state);
+    __onEnterClick = (event) => {
+        if (event.key === "Enter") {
+            this.props.addOrUpdate(this.state.employee);
+        }
     };
 
-    __add(){
-
-        axios.post(this.props.serviceUrl + "/add",{
-            name : this.state.name,
-            surname : this.state.surname,
-            salary : this.state.salary
-
-        });
-    }
 
 
-    __clear = (e) => {
-        this.setState({
-            name : "",
-            surname : "",
-            salary : ""
-        });
-    }
+    __handleChange = (e) => {
 
+        let state = {
+            employee: this.state.employee
+        };
+
+        state.employee[e.target.name] = e.target.value;
+
+        this.setState(state);
+
+    };
+
+    componentWillReceiveProps = (nextProps) => {
+        this.setState({employee: nextProps.employee});
+    };
 
 }
 
