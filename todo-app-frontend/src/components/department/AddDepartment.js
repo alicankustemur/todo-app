@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Panel, FormGroup, Col, FormControl, Button, ControlLabel} from 'react-bootstrap';
-import axios from "axios";
 
 import "../style.css";
 
@@ -10,35 +9,27 @@ export default class AddDepartment extends Component {
         super(props);
 
         this.state = {
-            name: "",
-            description: "",
-            employee: "",
-            employees : []
+            department: this.props.department,
+            employees: this.props.employees
         };
-    }
 
-    componentDidMount() {
-        var _this = this;
-
-        axios.get( "http://localhost:8080/todo-app/employee/employees")
-            .then(response => {
-                _this.setState({
-                    employees: response.data
-                });
-            });
     }
 
     render() {
 
+        let operationText = this.state.department.id ? "Update" : "Add";
+        let bsStyle = this.state.department.id ? "success" : "primary";
+
         return (
-            <Panel bsStyle="primary" header="Add Department" className="panel">
+            <Panel bsStyle={bsStyle} header={operationText + " Department"} className="panel">
                 <div className="form-horizontal">
-                <FormGroup>
+                    <FormGroup>
                         <Col componentClass={ControlLabel} sm={2}>
                             Name
                         </Col>
                         <Col sm={10}>
-                            <FormControl type="input" placeholder="Name" name="name" value={this.state.name} required onChange={this.__handleChange}/>
+                            <FormControl type="input" placeholder="Name" name="name" value={this.state.department.name}
+                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
                         </Col>
                     </FormGroup>
 
@@ -47,8 +38,9 @@ export default class AddDepartment extends Component {
                             Description
                         </Col>
                         <Col sm={10}>
-                            <FormControl componentClass="textarea" rows="4" placeholder="Description" name="description" value={this.state.description}
-                                         required onChange={this.__handleChange}/>
+                            <FormControl componentClass="textarea" rows="4" placeholder="Description" name="description"
+                                         value={this.state.department.description}
+                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
                         </Col>
                     </FormGroup>
                     <FormGroup>
@@ -56,25 +48,23 @@ export default class AddDepartment extends Component {
                             Employee
                         </Col>
                         <Col sm={10}>
-                            <select className="form-control employeesDropDown" name="employee" value={this.state.employee} required onChange={this.__handleChange}>
-                                {
-                                    this.state.employees.map((employee, index) =>
-                                        <option key={index} value={employee.id}>{employee.name}</option>
-                                    )
-                                }
+                            <select className="form-control employeesDropDown" name="employee"
+                                    value={this.state.department.employee} onChange={this.__handleChange}>
+                                {this._employeeOptions()}
                             </select>
                         </Col>
                     </FormGroup>
                     <FormGroup>
                         <Col smOffset={2} lg={2}>
-                            <Button bsStyle="primary" type="submit" className="addDepartmentButton">
-                                Add
+                            <Button bsStyle={bsStyle} type="submit" className="addDepartmentButton"
+                                    onClick={this.props.addOrUpdate.bind(this, this.state.department)}>
+                                {operationText}
                             </Button>
                         </Col>
 
                         <Col lg={2}>
                             <Button bsStyle="warning" type="button" className="cleDepartmentButton"
-                                    onClick={() => this.__clear()}>
+                                    onClick={this.props.onClear.bind(this)}>
                                 Clear
                             </Button>
                         </Col>
@@ -84,19 +74,39 @@ export default class AddDepartment extends Component {
         );
     }
 
-    __handleChange = (e) => {
-        let state = {};
-        state[e.target.name] = e.target.value;
-        this.setState(state);
+    __onEnterClick = (event) => {
+        if (event.key === "Enter") {
+            this.props.addOrUpdate(this.state.department);
+        }
     };
 
-    __clear = (e) => {
-        this.setState({
-            name : "",
-            description : "",
-            employee : ""
-        });
-    }
+    __handleChange = (e) => {
+
+        let state = {
+            department: this.state.department
+        };
+
+        state.department[e.target.name] = e.target.value;
+
+        this.setState(state);
+
+    };
+
+    _employeeOptions = () => {
+        let employees = this.state.employees;
+        let rows = [];
+        for (let i = 0; i < employees.length; i++) {
+            let employee = employees[i];
+            rows.push(<option key={i} value={employee.id}>{employee.name}</option>);
+        }
+
+        return rows;
+    };
+
+    componentWillReceiveProps = (nextProps) => {
+        this.setState({department: nextProps.department, employees: nextProps.employees});
+    };
+
 
 }
 

@@ -2,12 +2,7 @@ package io.github.alicankustemur.todoapp.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Where;
 
@@ -24,7 +19,7 @@ public class Department extends AbstractEntity implements Serializable {
 	@Column(name = "DESCRIPTION")
 	private String description;
 
-	@OneToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "EMPLOYEE")
 	private Employee employee;
 	

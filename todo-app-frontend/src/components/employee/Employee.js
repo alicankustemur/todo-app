@@ -30,18 +30,18 @@ export default class Employee extends Component {
             <Grid className="grid">
                 <Col lg={6}>
                     <AddEmployee serviceUrl={serviceUrl} employee={this.state.employee}
-                                 addOrUpdate={this.__addOrUpdate} onClear={this._clear} />
+                                 addOrUpdate={this.__addOrUpdate} onClear={this._clear}/>
                 </Col>
                 <Col lg={6}>
-                    <EmployeeList employees={this.state.employees} serviceUrl={serviceUrl} onDelete={this.__delete}
-                                  onUpdate={this.__update} />
+                    <EmployeeList employees={this.state.employees} onDelete={this.__delete}
+                                  onUpdate={this.__update}/>
                 </Col>
             </Grid>
         );
     }
 
 
-    _clear(){
+    _clear() {
         this.setState({
             employee: {
                 id: "",
@@ -74,10 +74,12 @@ export default class Employee extends Component {
     __update = (employee) => {
 
         this.setState({
-            id: employee.id,
-            name: employee.name,
-            surname: employee.surname,
-            salary: employee.salary
+            employee: {
+                id: employee.id,
+                name: employee.name,
+                surname: employee.surname,
+                salary: employee.salary
+            }
         });
 
     }
@@ -98,10 +100,10 @@ export default class Employee extends Component {
                     this._clear();
                 });
             } else {
-                axios.put(serviceUrl + "/update/" + this.state.id, {
-                    name: this.state.name,
-                    surname: this.state.surname,
-                    salary: this.state.salary
+                axios.put(serviceUrl + "/update/" + employee.id, {
+                    name: employee.name,
+                    surname: employee.surname,
+                    salary: employee.salary
                 }).then(() => {
                     this.__list();
                     toast.success("Updated new employee.");

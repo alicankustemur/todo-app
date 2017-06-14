@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {Panel, Table,Button} from 'react-bootstrap';
+import {Panel, Table, Button} from 'react-bootstrap';
 
 export default class EmployeeList extends Component {
 
-     render() {
+    render() {
 
         return (
             <Panel header="Employee List" className="panel">

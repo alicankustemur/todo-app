@@ -14,8 +14,8 @@ export default class AddEmployee extends Component {
 
     render() {
 
-        let operationText = this.state.id ? "Update" : "Add";
-        let bsStyle = this.state.id ? "success" : "primary";
+        let operationText = this.state.employee.id ? "Update" : "Add";
+        let bsStyle = this.state.employee.id ? "success" : "primary";
 
         return (
             <Panel bsStyle={bsStyle} header={operationText + " Employee"} className="panel" >
