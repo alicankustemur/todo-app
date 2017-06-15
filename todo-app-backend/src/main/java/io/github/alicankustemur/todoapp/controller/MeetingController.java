@@ -7,6 +7,7 @@ import io.github.alicankustemur.todoapp.controller.base.BaseController;
 import io.github.alicankustemur.todoapp.domain.Department;
 import io.github.alicankustemur.todoapp.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,56 +19,49 @@ import io.github.alicankustemur.todoapp.service.MeetingService;
 @RestController
 @RequestMapping("/meeting")
 public class MeetingController implements BaseController<Meeting> {
-	
-	@Autowired
-	private MeetingService service;
-	
-	@Autowired
-	private DepartmentService departmentService;
-	
-	@GetMapping("/list")
-	@ResponseBody
-	@Override
-	public List<Meeting> list() {
-		return service.getAll();
-	}
 
-	@DeleteMapping("/delete/{id}")
-	@Override
-	public void delete(@PathVariable("id") Long id){
-		
-		Meeting meeting = service.get(id);
-		meeting.setRecordIsDeleted(true);
-		meeting.setRecordUpdateTime(new Date());
-		
-		service.saveOrUpdate(meeting);
-	}
+    @Autowired
+    private MeetingService service;
 
-	@PostMapping("/add")
-	@Override
-	public Meeting add(@RequestBody Meeting meeting) {
-		meeting.setRecordIsDeleted(false);
-		meeting.setRecordCreateTime(new Date());
-		return service.saveOrUpdate(meeting);
-	}
+    @Autowired
+    private DepartmentService departmentService;
 
 
-	@PutMapping("/update/{id}")
-	@Override
-	public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Meeting meeting){
+    @PostMapping("/add")
+    @Override
+    public ResponseEntity<Meeting> add(@RequestBody Meeting meeting) {
+        meeting.setRecordCreateTime(new Date());
+        meeting.setRecordIsDeleted(false);
 
-		Meeting willBeUpdatedMeeting = service.get(id);
+        return ResponseEntity.ok(service.saveOrUpdate(meeting));
+    }
 
-		willBeUpdatedMeeting.setName(meeting.getName());
-		willBeUpdatedMeeting.setDescription(meeting.getDescription());
-		willBeUpdatedMeeting.setDepartment(meeting.getDepartment());
-		willBeUpdatedMeeting.setRecordIsDeleted(false);
-		willBeUpdatedMeeting.setRecordUpdateTime(new Date());
+    @GetMapping("/list")
+    @ResponseBody
+    @Override
+    public List<Meeting> list() {
+        return service.getAll();
+    }
 
-		service.saveOrUpdate(willBeUpdatedMeeting);
-		
-		return ResponseEntity.ok("");
-	}
-	
+    @DeleteMapping("/delete/{id}")
+    @Override
+    public ResponseEntity<Meeting> delete(@PathVariable("id") Long id) {
+        Meeting deletedMeeting = service.get(id);
+        deletedMeeting.setRecordIsDeleted(true);
+        deletedMeeting.setRecordUpdateTime(new Date());
 
+        return ResponseEntity.ok(service.saveOrUpdate(deletedMeeting));
+    }
+
+    @PutMapping("/update/{id}")
+    @Override
+    public ResponseEntity<Meeting> update(@PathVariable("id") Long id,@RequestBody Meeting meeting) {
+        Meeting willBeUpdatedMeeting = service.get(id);
+        willBeUpdatedMeeting.setName(meeting.getName());
+        willBeUpdatedMeeting.setDescription(meeting.getDescription());
+        willBeUpdatedMeeting.setDepartment(meeting.getDepartment());
+        willBeUpdatedMeeting.setRecordUpdateTime(new Date());
+
+        return ResponseEntity.ok(service.saveOrUpdate(willBeUpdatedMeeting));
+    }
 }

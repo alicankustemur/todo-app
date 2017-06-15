@@ -13,8 +13,19 @@ import io.github.alicankustemur.todoapp.service.base.AbstractBaseServiceImpl;
 @Service
 public class EmployeeServiceImpl extends AbstractBaseServiceImpl<Employee, Long> implements EmployeeService {
 
-	public EmployeeServiceImpl(EmployeeRepository repository) {
-		super(repository);
-	}
+    private EmployeeRepository repository;
 
+    public EmployeeServiceImpl(EmployeeRepository repository) {
+        super(repository);
+        this.repository = repository;
+    }
+
+    @Override
+    public boolean isNotItAvailableByIdentity(Long identity) {
+        if (repository.findByIdentity(identity) == null) {
+            return true;
+        }
+
+        return false;
+    }
 }

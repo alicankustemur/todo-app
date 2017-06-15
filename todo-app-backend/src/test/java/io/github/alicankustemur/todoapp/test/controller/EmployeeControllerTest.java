@@ -5,6 +5,7 @@ import io.github.alicankustemur.todoapp.controller.EmployeeController;
 import io.github.alicankustemur.todoapp.domain.Employee;
 import io.github.alicankustemur.todoapp.repository.EmployeeRepository;
 import io.github.alicankustemur.todoapp.service.EmployeeService;
+import io.github.alicankustemur.todoapp.service.InitializeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,43 +31,52 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@WebMvcTest(EmployeeController.class)
 public class EmployeeControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
+    private InitializeService initializeService;
+
+    @MockBean
     private EmployeeService service;
 
-    @Mock
-    private EmployeeRepository repository;
-
-    @InjectMocks
-    @Autowired
-    private EmployeeController controller;
-
-    @Autowired
-    private WebApplicationContext wac;
-
     private final static String APPLICATION_URL = "http://localhost:3001/employee";
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-    }
 
 
     // Feature : Employees Operations
     // Scenario : User want to add a new employee
     @Test
     public void givenEmployeeWhenSendPostRequestWithEmployeeThenAddNewEmployee() throws Exception {
+
+        when(service.isNotItAvailableByIdentity(getEmployee().getIdentity())).thenReturn(true);
+
         ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post(APPLICATION_URL + "/add")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsBytes(getEmployee())))
                 .andExpect(status().isOk())
+                .andExpect(handler().handlerType(EmployeeController.class))
+                .andExpect(handler().methodName("add"));
+
+    }
+
+    // Feature : Employees Operations
+    // Scenario : User want to add a new employee but same employee identity available.
+    @Test
+    public void givenEmployeeWhenSendPostRequestWithEmployeeThenGetBadRequest() throws Exception {
+
+        when(service.isNotItAvailableByIdentity(getEmployee().getIdentity())).thenReturn(false);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        mockMvc.perform(post(APPLICATION_URL + "/add")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapper.writeValueAsBytes(getEmployee())))
+                .andExpect(status().is4xxClientError())
                 .andExpect(handler().handlerType(EmployeeController.class))
                 .andExpect(handler().methodName("add"));
 
@@ -136,6 +148,7 @@ public class EmployeeControllerTest {
         employee.setName("Ali Can");
         employee.setSurname("Kuştemur");
         employee.setSalary(33f);
+        employee.setIdentity(999L);
 
         return employee;
     }

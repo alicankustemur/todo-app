@@ -4,6 +4,7 @@ import io.github.alicankustemur.todoapp.domain.base.AbstractEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -12,12 +13,12 @@ import java.util.List;
  */
 public interface BaseController<T extends AbstractEntity> {
 
-    public T add(T t);
+    public ResponseEntity<T> add(T t);
 
     public List<T> list();
 
-    public void delete(Long id);
+    public ResponseEntity<T> delete(Long id);
 
-    public ResponseEntity update(Long id, T t);
+    public ResponseEntity<T> update(Long id, T t);
 
 }

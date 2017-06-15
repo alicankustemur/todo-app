@@ -7,6 +7,7 @@ import io.github.alicankustemur.todoapp.domain.Department;
 import io.github.alicankustemur.todoapp.domain.Employee;
 import io.github.alicankustemur.todoapp.service.DepartmentService;
 import io.github.alicankustemur.todoapp.service.EmployeeService;
+import io.github.alicankustemur.todoapp.service.InitializeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +16,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -40,33 +45,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@WebMvcTest(DepartmentController.class)
 public class DepartmentControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
+    private InitializeService initializeService;
+
+    @MockBean
     private EmployeeService employeeService;
 
-    @Mock
+    @MockBean
     private DepartmentService service;
 
-    @InjectMocks
-    @Autowired
-    private DepartmentController controller;
-
-    @Autowired
-    private WebApplicationContext wac;
-
-    private final static String APPLICATION_URL = "http://localhost:8080/todo-app/department";
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-    }
-
+    private final static String APPLICATION_URL = "http://localhost:3001/department";
 
     // Feature : Department Operations
     // Scenario : User want to add a department

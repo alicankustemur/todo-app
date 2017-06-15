@@ -7,5 +7,6 @@ import io.github.alicankustemur.todoapp.domain.Employee;
 
 @Repository
 public interface EmployeeRepository extends BaseRepository<Employee, Long> {
+    Employee findByIdentity(Long identity);
 	
 }

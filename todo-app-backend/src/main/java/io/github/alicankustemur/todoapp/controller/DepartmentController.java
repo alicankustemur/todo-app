@@ -25,10 +25,10 @@ public class DepartmentController implements BaseController<Department> {
 
     @PostMapping("/add")
     @Override
-    public Department add(@RequestBody Department department) {
+    public ResponseEntity<Department> add(@RequestBody Department department) {
         department.setRecordIsDeleted(false);
         department.setRecordCreateTime(new Date());
-        return service.saveOrUpdate(department);
+        return ResponseEntity.ok(service.saveOrUpdate(department));
     }
 
     @GetMapping("/list")
@@ -39,30 +39,28 @@ public class DepartmentController implements BaseController<Department> {
 
     @DeleteMapping("/delete/{id}")
     @Override
-    public void delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Department> delete(@PathVariable("id") Long id) {
         Department deletedDepartment = service.get(id);
         deletedDepartment.setRecordIsDeleted(true);
         deletedDepartment.setRecordUpdateTime(new Date());
 
-        service.saveOrUpdate(deletedDepartment);
+        return ResponseEntity.ok(service.saveOrUpdate(deletedDepartment));
     }
 
     @PutMapping("/update/{id}")
     @Override
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Department department) {
+    public ResponseEntity<Department> update(@PathVariable("id") Long id, @RequestBody Department department) {
         Department willBeUpdatedDepartment = service.get(id);
 
         if (service.isItAvailableDepartmentWithThisEmployee(department.getEmployee())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(willBeUpdatedDepartment);
         } else {
             willBeUpdatedDepartment.setName(department.getName());
             willBeUpdatedDepartment.setDescription(department.getDescription());
             willBeUpdatedDepartment.setEmployee(department.getEmployee());
             willBeUpdatedDepartment.setRecordUpdateTime(new Date());
 
-            service.saveOrUpdate(willBeUpdatedDepartment);
-
-            return ResponseEntity.ok("");
+            return ResponseEntity.ok(service.saveOrUpdate(willBeUpdatedDepartment));
         }
     }
 }

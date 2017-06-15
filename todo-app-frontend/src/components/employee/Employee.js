@@ -19,7 +19,8 @@ export default class Employee extends Component {
                 id: "",
                 name: "",
                 surname: "",
-                salary: ""
+                salary: "",
+                identity: ""
             }
         }
     }
@@ -47,7 +48,8 @@ export default class Employee extends Component {
                 id: "",
                 name: "",
                 surname: "",
-                salary: ""
+                salary: "",
+                identity: ""
             }
         });
     }
@@ -78,7 +80,8 @@ export default class Employee extends Component {
                 id: employee.id,
                 name: employee.name,
                 surname: employee.surname,
-                salary: employee.salary
+                salary: employee.salary,
+                identity: employee.identity
             }
         });
 
@@ -87,13 +90,14 @@ export default class Employee extends Component {
 
     __addOrUpdate = (employee) => {
 
-        if (employee.name && employee.surname && employee.salary) {
+        if (employee.name && employee.surname && employee.salary && employee.identity) {
 
             if (!employee.id) {
                 axios.post(serviceUrl + "/add", {
                     name: employee.name,
                     surname: employee.surname,
-                    salary: employee.salary
+                    salary: employee.salary,
+                    identity: employee.identity
                 }).then(() => {
                     this.__list();
                     toast.success("Added new employee.");
@@ -103,7 +107,8 @@ export default class Employee extends Component {
                 axios.put(serviceUrl + "/update/" + employee.id, {
                     name: employee.name,
                     surname: employee.surname,
-                    salary: employee.salary
+                    salary: employee.salary,
+                    identity: employee.identity
                 }).then(() => {
                     this.__list();
                     toast.success("Updated new employee.");
@@ -117,6 +122,8 @@ export default class Employee extends Component {
             toast.info("Please enter a surname");
         } else if (!this.state.salary) {
             toast.info("Please enter a salary");
+        }else if (!this.state.identity) {
+            toast.info("Please enter a identity");
         }
 
     }

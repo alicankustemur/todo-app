@@ -10,6 +10,7 @@ export default class EmployeeList extends Component {
                 <Table className="table">
                     <thead>
                     <tr>
+                        <th>Identity</th>
                         <th>Name</th>
                         <th>Surname</th>
                         <th>Salary</th>
@@ -29,6 +30,7 @@ export default class EmployeeList extends Component {
         for (let i = 0; i < employees.length; i++) {
             let employee = employees[i];
             rows.push(<tr key={i}>
+                <td>{employee.identity}</td>
                 <td>{employee.name}</td>
                 <td>{employee.surname}</td>
                 <td>{employee.salary}</td>

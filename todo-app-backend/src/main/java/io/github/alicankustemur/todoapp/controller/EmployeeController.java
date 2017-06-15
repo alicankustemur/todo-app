@@ -21,10 +21,15 @@ public class EmployeeController implements BaseController<Employee> {
 
     @PostMapping("/add")
     @Override
-    public Employee add(@RequestBody Employee employee) {
-        employee.setRecordIsDeleted(false);
-        employee.setRecordCreateTime(new Date());
-         return service.saveOrUpdate(employee);
+    public ResponseEntity<Employee> add(@RequestBody Employee employee) {
+
+        if(service.isNotItAvailableByIdentity(employee.getIdentity())){
+            employee.setRecordIsDeleted(false);
+            employee.setRecordCreateTime(new Date());
+            return ResponseEntity.ok(service.saveOrUpdate(employee));
+        }
+
+        return ResponseEntity.badRequest().body(employee);
     }
 
     @GetMapping("/list")
@@ -35,17 +40,17 @@ public class EmployeeController implements BaseController<Employee> {
 
     @DeleteMapping("/delete/{id}")
     @Override
-    public void delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Employee> delete(@PathVariable("id") Long id) {
         Employee deletedEmployee = service.get(id);
         deletedEmployee.setRecordIsDeleted(true);
         deletedEmployee.setRecordUpdateTime(new Date());
 
-        service.saveOrUpdate(deletedEmployee);
+        return ResponseEntity.ok(service.saveOrUpdate(deletedEmployee));
     }
 
     @PutMapping("/update/{id}")
     @Override
-    public ResponseEntity<?> update(@PathVariable("id") Long id,@RequestBody Employee employee) {
+    public ResponseEntity<Employee> update(@PathVariable("id") Long id, @RequestBody Employee employee) {
         Employee willBeUpdatedEmployee = service.get(id);
 
         willBeUpdatedEmployee.setName(employee.getName());
@@ -53,9 +58,7 @@ public class EmployeeController implements BaseController<Employee> {
         willBeUpdatedEmployee.setSalary(employee.getSalary());
         willBeUpdatedEmployee.setRecordUpdateTime(new Date());
 
-        service.saveOrUpdate(willBeUpdatedEmployee);
-
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(service.saveOrUpdate(willBeUpdatedEmployee));
     }
 
 }

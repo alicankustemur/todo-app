@@ -1,14 +1,13 @@
 package io.github.alicankustemur.todoapp.service.impl;
 
-import javax.transaction.Transactional;
-
 import io.github.alicankustemur.todoapp.domain.Department;
 import io.github.alicankustemur.todoapp.domain.Employee;
 import io.github.alicankustemur.todoapp.repository.DepartmentRepository;
 import io.github.alicankustemur.todoapp.service.DepartmentService;
+import io.github.alicankustemur.todoapp.service.base.AbstractBaseServiceImpl;
 import org.springframework.stereotype.Service;
 
-import io.github.alicankustemur.todoapp.service.base.AbstractBaseServiceImpl;
+import javax.transaction.Transactional;
 
 @Transactional
 @Service

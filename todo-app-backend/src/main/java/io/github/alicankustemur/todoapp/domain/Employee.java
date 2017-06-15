@@ -11,50 +11,62 @@ import io.github.alicankustemur.todoapp.domain.base.AbstractEntity;
 @Entity
 @Table(name = "EMPLOYEE")
 @Where(clause = "RECORD_IS_DELETED = 0")
-public class Employee extends AbstractEntity{
-	
-	public Employee(String name, String surname, Float salary) {
-		super();
-		this.name = name;
-		this.surname = surname;
-		this.salary = salary;
-	}
-	
-	public Employee(){
-		
-	}
-	
-	@Column(name = "NAME")
-	private String name;
+public class Employee extends AbstractEntity {
 
-	@Column(name = "SURNAME")
-	private String surname;
+    public Employee(String name, String surname, Float salary, Long identity) {
+        super();
+        this.name = name;
+        this.surname = surname;
+        this.salary = salary;
+        this.identity = identity;
+    }
 
-	@Column(name = "SALARY")
-	private Float salary;
-	
-	public String getName() {
-		return name;
-	}
+    public Employee() {
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    }
 
-	public String getSurname() {
-		return surname;
-	}
+    @Column(name = "NAME")
+    private String name;
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+    @Column(name = "SURNAME")
+    private String surname;
 
-	public Float getSalary() {
-		return salary;
-	}
+    @Column(name = "SALARY")
+    private Float salary;
 
-	public void setSalary(Float salary) {
-		this.salary = salary;
-	}
+    @Column(name = "IDENTITY")
+    private Long identity;
 
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public Float getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Float salary) {
+        this.salary = salary;
+    }
+
+    public Long getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(Long identity) {
+        this.identity = identity;
+    }
 }

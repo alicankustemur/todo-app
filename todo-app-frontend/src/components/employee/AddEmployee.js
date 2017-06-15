@@ -22,6 +22,16 @@ export default class AddEmployee extends Component {
                 <div className="form-horizontal">
                     <FormGroup>
                         <Col componentClass={ControlLabel} lg={2}>
+                            Identity
+                        </Col>
+                        <Col lg={10}>
+                            <FormControl type="text" placeholder="Identity" name="identity" value={this.state.employee.identity}
+                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
+                        </Col>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Col componentClass={ControlLabel} lg={2}>
                             Name
                         </Col>
                         <Col lg={10}>
