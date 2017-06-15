@@ -21,8 +21,8 @@ public abstract class AbstractBaseServiceImpl<T extends AbstractEntity, ID exten
     }
 
     @Override
-    public Optional<T> saveOrUpdate(T entity) {
-        return Optional.of(baseRepository.save(entity));
+    public T saveOrUpdate(T entity) {
+        return baseRepository.save(entity);
     }
 
     @Override

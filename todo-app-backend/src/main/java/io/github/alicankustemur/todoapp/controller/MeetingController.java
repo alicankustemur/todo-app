@@ -48,7 +48,7 @@ public class MeetingController implements BaseController<Meeting> {
 	public Meeting add(@RequestBody Meeting meeting) {
 		meeting.setRecordIsDeleted(false);
 		meeting.setRecordCreateTime(new Date());
-		return service.saveOrUpdate(meeting).orElse(null);
+		return service.saveOrUpdate(meeting);
 	}
 
 

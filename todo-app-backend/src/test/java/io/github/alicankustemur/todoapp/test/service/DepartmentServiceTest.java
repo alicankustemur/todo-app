@@ -39,7 +39,7 @@ public class DepartmentServiceTest {
 		when(repository.findOne(department.getId())).thenReturn(null);
 		when(repository.save(department)).thenReturn(department);
 
-		Department gettingDepartment = service.saveOrUpdate(department).orElse(new Department());
+		Department gettingDepartment = service.saveOrUpdate(department);
 
 		assertThat(gettingDepartment.getId(), is(equalTo(department.getId())));
 	}
@@ -51,7 +51,7 @@ public class DepartmentServiceTest {
 		when(repository.findOne(department.getId())).thenReturn(null);
 		when(repository.save(department)).thenReturn(department);
 
-		Department gettingDepartment = service.saveOrUpdate(department).orElse(new Department());
+		Department gettingDepartment = service.saveOrUpdate(department);
 		gettingDepartment.setRecordIsDeleted(true);
 		gettingDepartment.setRecordUpdateTime(new Date());
 		service.saveOrUpdate(gettingDepartment);
@@ -69,10 +69,10 @@ public class DepartmentServiceTest {
 		when(repository.findOne(department.getId())).thenReturn(null);
 		when(repository.save(department)).thenReturn(department);
 
-		Department gettingDepartment = service.saveOrUpdate(department).orElse(new Department());
+		Department gettingDepartment = service.saveOrUpdate(department);
 		gettingDepartment.setName("Department 2");;
 		gettingDepartment.setRecordUpdateTime(new Date());
-		Department updatedDepartment = service.saveOrUpdate(gettingDepartment).orElse(new Department());
+		Department updatedDepartment = service.saveOrUpdate(gettingDepartment);
 		
 		assertThat(updatedDepartment.getName(), not(equalTo("Department 1")));
 		

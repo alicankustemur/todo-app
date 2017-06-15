@@ -59,17 +59,11 @@ public class EmployeeControllerTest {
     // Scenario : User want to add a new employee
     @Test
     public void givenEmployeeWhenSendPostRequestWithEmployeeThenAddNewEmployee() throws Exception {
-        Employee employee = new Employee();
-        employee.setId(1L);
-        employee.setName("Ali Can");
-        employee.setSurname("Kuştemur");
-        employee.setSalary(33f);
-
         ObjectMapper mapper = new ObjectMapper();
 
         mockMvc.perform(post(APPLICATION_URL + "/add")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(mapper.writeValueAsBytes(employee)))
+                .content(mapper.writeValueAsBytes(getEmployee())))
                 .andExpect(status().isOk())
                 .andExpect(handler().handlerType(EmployeeController.class))
                 .andExpect(handler().methodName("add"));
@@ -104,13 +98,7 @@ public class EmployeeControllerTest {
     @Test
     public void givenEmployeeIdWhenSendDeleteRequestWithIdThenDeleteThisEmployee() throws Exception {
 
-        Employee employee = new Employee();
-        employee.setId(1L);
-        employee.setName("Ali Can");
-        employee.setSurname("Kuştemur");
-        employee.setSalary(33f);
-
-        when(service.get(1L)).thenReturn(employee);
+        when(service.get(1L)).thenReturn(getEmployee());
 
         mockMvc.perform(delete(APPLICATION_URL + "/delete/{id}", 1L))
                 .andExpect(status().isOk())
@@ -125,16 +113,10 @@ public class EmployeeControllerTest {
     @Test
     public void givenEmployeeIdAndEmployeeWhenSendPutRequesWithEmployeeIdAndEmployeeThenUpdateEmployeeWhoseIdIsThisEmployeeId() throws Exception {
 
-        Employee employee = new Employee();
-        employee.setId(1L);
-        employee.setName("Ali Can");
-        employee.setSurname("Kuştemur");
-        employee.setSalary(33f);
+        when(service.get(1L)).thenReturn(getEmployee());
 
-        when(service.get(1L)).thenReturn(employee);
-
-        Employee updatedEmployee = employee;
-        employee.setName("Özcan");
+        Employee updatedEmployee = getEmployee();
+        updatedEmployee.setName("Özcan");
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -145,6 +127,17 @@ public class EmployeeControllerTest {
                 .andExpect(handler().handlerType(EmployeeController.class))
                 .andExpect(handler().methodName("update"));
 
+    }
+
+
+    public Employee getEmployee() {
+        Employee employee = new Employee();
+        employee.setId(999999999L);
+        employee.setName("Ali Can");
+        employee.setSurname("Kuştemur");
+        employee.setSalary(33f);
+
+        return employee;
     }
 
 

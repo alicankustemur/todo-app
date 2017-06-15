@@ -37,7 +37,7 @@ public class EmployeeServiceTest {
 		Employee employee = getEmployee();
 		when(repository.findOne(employee.getId())).thenReturn(null);
 		when(repository.save(employee)).thenReturn(employee);
-		Employee gettingEmployee = service.saveOrUpdate(employee).orElse(new Employee());
+		Employee gettingEmployee = service.saveOrUpdate(employee);
 
 		assertThat(gettingEmployee.getId(), is(equalTo(employee.getId())));
 	}
@@ -49,7 +49,7 @@ public class EmployeeServiceTest {
 		when(repository.findOne(employee.getId())).thenReturn(null);
 		when(repository.save(employee)).thenReturn(employee);
 
-		Employee gettingEmployee = service.saveOrUpdate(employee).orElse(new Employee());
+		Employee gettingEmployee = service.saveOrUpdate(employee);
 		gettingEmployee.setRecordIsDeleted(true);
 		gettingEmployee.setRecordUpdateTime(new Date());
 		service.saveOrUpdate(gettingEmployee);
@@ -67,10 +67,10 @@ public class EmployeeServiceTest {
 		when(repository.findOne(employee.getId())).thenReturn(null);
 		when(repository.save(employee)).thenReturn(employee);
 
-		Employee gettingEmployee = service.saveOrUpdate(employee).orElse(new Employee());
+		Employee gettingEmployee = service.saveOrUpdate(employee);
 		gettingEmployee.setName("Özcan");;
 		gettingEmployee.setRecordUpdateTime(new Date());
-		Employee updatedEmployee = service.saveOrUpdate(gettingEmployee).orElse(new Employee());
+		Employee updatedEmployee = service.saveOrUpdate(gettingEmployee);
 		
 		assertThat(updatedEmployee.getName(), not(equalTo("Ali Can")));
 		

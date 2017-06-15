@@ -24,7 +24,7 @@ public class EmployeeController implements BaseController<Employee> {
     public Employee add(@RequestBody Employee employee) {
         employee.setRecordIsDeleted(false);
         employee.setRecordCreateTime(new Date());
-         return service.saveOrUpdate(employee).orElse(null);
+         return service.saveOrUpdate(employee);
     }
 
     @GetMapping("/list")

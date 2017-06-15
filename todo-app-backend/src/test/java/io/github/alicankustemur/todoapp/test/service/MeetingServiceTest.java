@@ -40,7 +40,7 @@ public class MeetingServiceTest {
 		when(repository.findOne(meeting.getId())).thenReturn(null);
 		when(repository.save(meeting)).thenReturn(meeting);
 
-		Meeting gettingMeeting = service.saveOrUpdate(meeting).orElse(new Meeting());
+		Meeting gettingMeeting = service.saveOrUpdate(meeting);
 
 		assertThat(gettingMeeting.getId(), is(equalTo(meeting.getId())));
 	}
@@ -52,7 +52,7 @@ public class MeetingServiceTest {
 		when(repository.findOne(meeting.getId())).thenReturn(null);
 		when(repository.save(meeting)).thenReturn(meeting);
 
-		Meeting gettingMeeting = service.saveOrUpdate(meeting).orElse(new Meeting());
+		Meeting gettingMeeting = service.saveOrUpdate(meeting);
 		gettingMeeting.setRecordIsDeleted(true);
 		gettingMeeting.setRecordUpdateTime(new Date());
 		service.saveOrUpdate(gettingMeeting);
@@ -70,10 +70,10 @@ public class MeetingServiceTest {
 		when(repository.findOne(meeting.getId())).thenReturn(null);
 		when(repository.save(meeting)).thenReturn(meeting);
 
-		Meeting gettingMeeting = service.saveOrUpdate(meeting).orElse(new Meeting());
+		Meeting gettingMeeting = service.saveOrUpdate(meeting);
 		gettingMeeting.setName("Meeting 2");;
 		gettingMeeting.setRecordUpdateTime(new Date());
-		Meeting updatedMeeting = service.saveOrUpdate(gettingMeeting).orElse(new Meeting());
+		Meeting updatedMeeting = service.saveOrUpdate(gettingMeeting);
 		
 		assertThat(updatedMeeting.getName(), not(equalTo("Meeting 1")));
 		

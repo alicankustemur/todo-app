@@ -28,7 +28,7 @@ public class DepartmentController implements BaseController<Department> {
     public Department add(@RequestBody Department department) {
         department.setRecordIsDeleted(false);
         department.setRecordCreateTime(new Date());
-        return service.saveOrUpdate(department).orElse(null);
+        return service.saveOrUpdate(department);
     }
 
     @GetMapping("/list")

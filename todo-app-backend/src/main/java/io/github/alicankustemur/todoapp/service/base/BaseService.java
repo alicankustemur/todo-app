@@ -7,7 +7,7 @@ import io.github.alicankustemur.todoapp.domain.base.AbstractEntity;
 
 public interface BaseService<T extends AbstractEntity, ID> {
 
-	public Optional<T> saveOrUpdate(T entity);
+	public T saveOrUpdate(T entity);
 
 	public List<T> getAll();
 

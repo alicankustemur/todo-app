@@ -48,7 +48,7 @@ export default class AddEmployee extends Component {
                         <Col lg={10}>
                             <FormControl type="input" placeholder="Salary" name="salary"
                                          value={this.state.employee.salary} onChange={this.__handleChange}
-                                         onKeyPress={this.__onEnterClick}/>
+                                         onKeyPress={this.__onEnterClick}  />
                         </Col>
                     </FormGroup>
                     <FormGroup>
@@ -78,6 +78,15 @@ export default class AddEmployee extends Component {
 
 
     __handleChange = (e) => {
+
+        if(e.target.name === "salary"){
+            var regex = new RegExp("^[0-9]+$");
+            let isNumber = regex.test(e.target.value);
+            if(!isNumber){
+                e.target.value = "";
+                return;
+            }
+        }
 
         let state = {
             employee: this.state.employee
