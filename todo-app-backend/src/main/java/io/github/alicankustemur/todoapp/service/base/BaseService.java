@@ -13,6 +13,6 @@ public interface BaseService<T extends AbstractEntity, ID> {
 
 	public T get(ID id);
 
-	public void remove(ID id);
+	public T remove(ID id);
 
 }

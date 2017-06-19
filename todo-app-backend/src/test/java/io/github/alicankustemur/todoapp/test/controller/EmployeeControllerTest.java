@@ -43,6 +43,9 @@ public class EmployeeControllerTest {
     @MockBean
     private EmployeeService service;
 
+    @MockBean
+    private EmployeeRepository repository;
+
     private final static String APPLICATION_URL = "http://localhost:3001/employee";
 
 
@@ -76,7 +79,7 @@ public class EmployeeControllerTest {
         mockMvc.perform(post(APPLICATION_URL + "/add")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsBytes(getEmployee())))
-                .andExpect(status().is4xxClientError())
+                .andExpect(status().isBadRequest())
                 .andExpect(handler().handlerType(EmployeeController.class))
                 .andExpect(handler().methodName("add"));
 
@@ -121,26 +124,42 @@ public class EmployeeControllerTest {
     }
 
     // Feature : Employees Operations
-    // Scenario : User want to update a employee
+    // Scenario : User want to update a employee and
     @Test
     public void givenEmployeeIdAndEmployeeWhenSendPutRequesWithEmployeeIdAndEmployeeThenUpdateEmployeeWhoseIdIsThisEmployeeId() throws Exception {
 
-        when(service.get(1L)).thenReturn(getEmployee());
-
-        Employee updatedEmployee = getEmployee();
-        updatedEmployee.setName("Özcan");
+        when(service.get(999999999L)).thenReturn(getEmployee());
+        when(service.isNotItAvailableByIdentity(getAnotherEmployee().getIdentity())).thenReturn(true);
 
         ObjectMapper mapper = new ObjectMapper();
 
-        mockMvc.perform(put(APPLICATION_URL + "/update/{id}", 1L)
+        mockMvc.perform(put(APPLICATION_URL + "/update/{id}", 999999999L)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(mapper.writeValueAsBytes(updatedEmployee)))
+                .content(mapper.writeValueAsBytes(getAnotherEmployee())))
                 .andExpect(status().isOk())
                 .andExpect(handler().handlerType(EmployeeController.class))
                 .andExpect(handler().methodName("update"));
 
     }
 
+    // Feature : Employees Operations
+    // Scenario : User want to update a employee but same employee identity available.
+    @Test
+    public void givenEmployeeIdAndEmployeeWhenSendPutRequesWithEmployeeIdAndEmployeeThenGetBadRequest() throws Exception {
+
+        when(service.get(999999999L)).thenReturn(getEmployee());
+        when(service.isNotItAvailableByIdentity(getAnotherEmployee().getIdentity())).thenReturn(false);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        mockMvc.perform(put(APPLICATION_URL + "/update/{id}", 999999999L)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(mapper.writeValueAsBytes(getAnotherEmployee())))
+                .andExpect(status().isBadRequest())
+                .andExpect(handler().handlerType(EmployeeController.class))
+                .andExpect(handler().methodName("update"));
+
+    }
 
     public Employee getEmployee() {
         Employee employee = new Employee();
@@ -149,6 +168,17 @@ public class EmployeeControllerTest {
         employee.setSurname("Kuştemur");
         employee.setSalary(33f);
         employee.setIdentity(999L);
+
+        return employee;
+    }
+
+    public Employee getAnotherEmployee() {
+        Employee employee = new Employee();
+        employee.setId(null);
+        employee.setName("Özcan");
+        employee.setSurname("Kuştemur");
+        employee.setSalary(33f);
+        employee.setIdentity(888L);
 
         return employee;
     }

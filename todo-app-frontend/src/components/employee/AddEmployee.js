@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Panel, Button, FormControl, FormGroup, Col, ControlLabel} from 'react-bootstrap';
+import PropTypes from "prop-types";
 
 export default class AddEmployee extends Component {
 
@@ -25,8 +26,9 @@ export default class AddEmployee extends Component {
                             Identity
                         </Col>
                         <Col lg={10}>
-                            <FormControl type="text" placeholder="Identity" name="identity" value={this.state.employee.identity}
-                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
+                            <FormControl type="text" placeholder="Identity" name="identity"
+                                         value={this.state.employee.identity}
+                                         onChange={this._handleChange} onKeyPress={this._onEnterClick}/>
                         </Col>
                     </FormGroup>
 
@@ -36,7 +38,7 @@ export default class AddEmployee extends Component {
                         </Col>
                         <Col lg={10}>
                             <FormControl type="text" placeholder="Name" name="name" value={this.state.employee.name}
-                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
+                                         onChange={this._handleChange} onKeyPress={this._onEnterClick}/>
                         </Col>
                     </FormGroup>
 
@@ -46,8 +48,8 @@ export default class AddEmployee extends Component {
                         </Col>
                         <Col lg={10}>
                             <FormControl type="text" placeholder="Surname" name="surname"
-                                         value={this.state.employee.surname} onChange={this.__handleChange}
-                                         onKeyPress={this.__onEnterClick}/>
+                                         value={this.state.employee.surname} onChange={this._handleChange}
+                                         onKeyPress={this._onEnterClick}/>
                         </Col>
                     </FormGroup>
 
@@ -57,8 +59,8 @@ export default class AddEmployee extends Component {
                         </Col>
                         <Col lg={10}>
                             <FormControl type="input" placeholder="Salary" name="salary"
-                                         value={this.state.employee.salary} onChange={this.__handleChange}
-                                         onKeyPress={this.__onEnterClick}  />
+                                         value={this.state.employee.salary} onChange={this._handleChange}
+                                         onKeyPress={this._onEnterClick}/>
                         </Col>
                     </FormGroup>
                     <FormGroup>
@@ -80,19 +82,19 @@ export default class AddEmployee extends Component {
         );
     }
 
-    __onEnterClick = (event) => {
+    _onEnterClick = (event) => {
         if (event.key === "Enter") {
             this.props.addOrUpdate(this.state.employee);
         }
     };
 
 
-    __handleChange = (e) => {
+    _handleChange = (e) => {
 
-        if(e.target.name === "salary"){
+        if (e.target.name === "salary") {
             var regex = new RegExp("^[0-9]+$");
             let isNumber = regex.test(e.target.value);
-            if(!isNumber){
+            if (!isNumber) {
                 e.target.value = "";
                 return;
             }
@@ -112,6 +114,10 @@ export default class AddEmployee extends Component {
         this.setState({employee: nextProps.employee});
     };
 
+}
+
+AddEmployee.propTypes = {
+    employee: PropTypes.object
 }
 
 

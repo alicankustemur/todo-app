@@ -48,5 +48,3 @@ export default class EmployeeList extends Component {
 
 
 }
-
-

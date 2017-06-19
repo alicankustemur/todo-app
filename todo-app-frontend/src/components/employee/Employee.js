@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
-import {Col, Grid} from 'react-bootstrap';
 import axios from 'axios';
+import {Col, Grid} from 'react-bootstrap';
 import toast from 'pre-toast/lib/Toast';
+import PropTypes from "prop-types";
+
 import EmployeeList from "./EmployeeList";
+import AddEmployee from "./AddEmployee";
 
 import "../style.css";
-import AddEmployee from "./AddEmployee";
+
 
 const serviceUrl = "http://localhost:8080/todo-app/employee";
 
@@ -31,11 +34,11 @@ export default class Employee extends Component {
             <Grid className="grid">
                 <Col lg={6}>
                     <AddEmployee serviceUrl={serviceUrl} employee={this.state.employee}
-                                 addOrUpdate={this.__addOrUpdate} onClear={this._clear}/>
+                                 addOrUpdate={this._addOrUpdate} onClear={this._clear}/>
                 </Col>
                 <Col lg={6}>
-                    <EmployeeList employees={this.state.employees} onDelete={this.__delete}
-                                  onUpdate={this.__update}/>
+                    <EmployeeList employees={this.state.employees} onDelete={this._delete}
+                                  onUpdate={this._updateInputValues}/>
                 </Col>
             </Grid>
         );
@@ -52,28 +55,9 @@ export default class Employee extends Component {
                 identity: ""
             }
         });
-    }
+    };
 
-    __list() {
-
-        axios.get(serviceUrl + '/list')
-            .then(response => {
-                this.setState({
-                    employees: response.data
-                });
-            });
-    }
-
-    __delete = (id) => {
-        axios.delete(serviceUrl + '/delete/' + id)
-            .then(() => {
-                this.__list();
-                toast.success("Deleted selected employee");
-            });
-    }
-
-
-    __update = (employee) => {
+    _updateInputValues = (employee) => {
 
         this.setState({
             employee: {
@@ -85,35 +69,17 @@ export default class Employee extends Component {
             }
         });
 
-    }
+    };
 
 
-    __addOrUpdate = (employee) => {
+    _addOrUpdate = (employee) => {
 
         if (employee.name && employee.surname && employee.salary && employee.identity) {
 
             if (!employee.id) {
-                axios.post(serviceUrl + "/add", {
-                    name: employee.name,
-                    surname: employee.surname,
-                    salary: employee.salary,
-                    identity: employee.identity
-                }).then(() => {
-                    this.__list();
-                    toast.success("Added new employee.");
-                    this._clear();
-                });
+                this._add(employee);
             } else {
-                axios.put(serviceUrl + "/update/" + employee.id, {
-                    name: employee.name,
-                    surname: employee.surname,
-                    salary: employee.salary,
-                    identity: employee.identity
-                }).then(() => {
-                    this.__list();
-                    toast.success("Updated new employee.");
-                    this._clear();
-                });
+                this._update(employee);
             }
 
         } else if (!this.state.name) {
@@ -122,17 +88,76 @@ export default class Employee extends Component {
             toast.info("Please enter a surname");
         } else if (!this.state.salary) {
             toast.info("Please enter a salary");
-        }else if (!this.state.identity) {
+        } else if (!this.state.identity) {
             toast.info("Please enter a identity");
         }
 
-    }
+    };
+
+    _add(employee) {
+        axios.post(serviceUrl + "/add", {
+            name: employee.name,
+            surname: employee.surname,
+            salary: employee.salary,
+            identity: employee.identity
+        }).then(() => {
+            this._list();
+            toast.success("Added new employee.");
+            this._clear();
+        }).catch(error => {
+            this._availableEmployeeError(error);
+        });
+    };
+
+    _update(employee) {
+        axios.put(serviceUrl + "/update/" + employee.id, {
+            id: employee.id,
+            name: employee.name,
+            surname: employee.surname,
+            salary: employee.salary,
+            identity: employee.identity
+        }).then(() => {
+            this._list();
+            toast.success("Updated new employee.");
+            this._clear();
+        }).catch(error => {
+            this._availableEmployeeError(error);
+        });
+    };
+
+    _list() {
+
+        axios.get(serviceUrl + '/list')
+            .then(response => {
+                this.setState({
+                    employees: response.data
+                });
+            });
+    };
+
+    _delete = (id) => {
+        axios.delete(serviceUrl + '/delete/' + id)
+            .then(() => {
+                this._list();
+                toast.success("Deleted selected employee");
+            });
+    };
+
+    _availableEmployeeError = (error) => {
+        if (error.response.data === "employeeAvailableError") {
+            toast.warning("There is available a employee in same identiy.");
+        }
+    };
 
 
     componentDidMount() {
-        this.__list();
-    }
+        this._list();
+    };
 
 }
 
+Employee.propTypes = {
+    employees: PropTypes.array,
+    employee: PropTypes.object
+};
 

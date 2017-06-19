@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import {Col,Grid} from 'react-bootstrap';
-import AddMeeting from "./AddMeeting";
-import MeetingList from "./MeetingList";
+import {Col, Grid} from 'react-bootstrap';
 import axios from "axios";
 import toast from "pre-toast/lib/Toast";
+import PropTypes from "prop-types";
 
 import "../style.css";
 
+import AddMeeting from "./AddMeeting";
+import MeetingList from "./MeetingList";
 
-const serviceUrl = "http://localhost:8080/todo-app/meeting" ;
+const serviceUrl = "http://localhost:8080/todo-app/meeting";
 
 export default class Meeting extends Component {
 
@@ -30,10 +31,12 @@ export default class Meeting extends Component {
         return (
             <Grid className="grid">
                 <Col lg={6}>
-                    <AddMeeting meeting={this.state.meeting} departments={this.state.departments} onClear={this._clear} addOrUpdate={this.__addOrUpdate}/>
+                    <AddMeeting meeting={this.state.meeting} departments={this.state.departments} onClear={this._clear}
+                                addOrUpdate={this._addOrUpdate}/>
                 </Col>
                 <Col lg={6}>
-                    <MeetingList meetings={this.state.meetings} onDelete={this.__delete} onUpdate={this.__update} />
+                    <MeetingList meetings={this.state.meetings} onDelete={this._delete}
+                                 onUpdate={this._updateInputValues}/>
                 </Col>
             </Grid>
         );
@@ -50,25 +53,8 @@ export default class Meeting extends Component {
         });
     }
 
-    _list() {
 
-        axios.get(serviceUrl + '/list')
-            .then(response => {
-                this.setState({
-                    meetings: response.data
-                });
-            });
-    }
-
-    __delete = (id) => {
-        axios.delete(serviceUrl + '/delete/' + id)
-            .then(() => {
-                this._list();
-                toast.success("Deleted selected meeting.");
-            });
-    }
-
-    __update = (meeting) => {
+    _updateInputValues = (meeting) => {
 
         this.setState({
             meeting: {
@@ -93,32 +79,16 @@ export default class Meeting extends Component {
 
     };
 
-    __addOrUpdate = (meeting) => {
+    _addOrUpdate = (meeting) => {
 
         if (meeting.name && meeting.description && meeting.department) {
 
             meeting.department = this._getDepartmentById(meeting.department);
 
             if (!meeting.id) {
-                axios.post(serviceUrl + "/add", {
-                    name: meeting.name,
-                    description: meeting.description,
-                    department: meeting.department
-                }).then(() => {
-                    this._list();
-                    toast.success("Added new meeting.");
-                    this._clear();
-                });
+                this._add(meeting);
             } else {
-                axios.put(serviceUrl + "/update/" + meeting.id, {
-                    name: meeting.name,
-                    description: meeting.description,
-                    department: meeting.department
-                }).then(() => {
-                    this._list();
-                    toast.success("Updated new meeting.");
-                    this._clear();
-                });
+                this._add(meeting);
             }
 
         } else if (!this.state.meeting.name) {
@@ -129,6 +99,48 @@ export default class Meeting extends Component {
             toast.info("Please choose a department");
         }
 
+    }
+
+    _add(meeting) {
+        axios.post(serviceUrl + "/add", {
+            name: meeting.name,
+            description: meeting.description,
+            department: meeting.department
+        }).then(() => {
+            this._list();
+            toast.success("Added new meeting.");
+            this._clear();
+        });
+    }
+
+    _update(meeting) {
+        axios.put(serviceUrl + "/update/" + meeting.id, {
+            name: meeting.name,
+            description: meeting.description,
+            department: meeting.department
+        }).then(() => {
+            this._list();
+            toast.success("Updated new meeting.");
+            this._clear();
+        });
+    }
+
+    _list() {
+
+        axios.get(serviceUrl + '/list')
+            .then(response => {
+                this.setState({
+                    meetings: response.data
+                });
+            });
+    }
+
+    _delete = (id) => {
+        axios.delete(serviceUrl + '/delete/' + id)
+            .then(() => {
+                this._list();
+                toast.success("Deleted selected meeting.");
+            });
     }
 
     _departmentList() {
@@ -146,4 +158,9 @@ export default class Meeting extends Component {
     }
 }
 
+Meeting.propTypes = {
+    meetings: PropTypes.array,
+    meeting: PropTypes.object,
+    departments: PropTypes.array
+}
 

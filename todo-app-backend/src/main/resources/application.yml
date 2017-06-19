@@ -15,11 +15,14 @@ spring:
     hibernate:
       dialect: org.hibernate.dialect.MySQLDialect
       ddl-auto: update
-      show-sql: true
 
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+logging:
+  level:
+    org.hibernate.SQL: trace
 ---
 
 spring:
@@ -28,4 +31,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-      show-sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: trace

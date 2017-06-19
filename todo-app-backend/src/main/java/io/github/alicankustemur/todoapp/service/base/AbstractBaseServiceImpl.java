@@ -1,6 +1,7 @@
 package io.github.alicankustemur.todoapp.service.base;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,14 @@ public abstract class AbstractBaseServiceImpl<T extends AbstractEntity, ID exten
 
     @Override
     public T saveOrUpdate(T entity) {
+        entity.setRecordIsDeleted(false);
+
+        if (entity.getId() == null) {
+            entity.setRecordCreateTime(new Date());
+        } else {
+            entity.setRecordUpdateTime(new Date());
+        }
+
         return baseRepository.save(entity);
     }
 
@@ -36,8 +45,11 @@ public abstract class AbstractBaseServiceImpl<T extends AbstractEntity, ID exten
     }
 
     @Override
-    public void remove(ID id) {
-        baseRepository.delete(id);
+    public T remove(ID id) {
+        T entity = baseRepository.findOne(id);
+        entity.setRecordIsDeleted(true);
+        entity.setRecordUpdateTime(new Date());
+        return baseRepository.save(entity);
     }
 
     public BaseRepository<T, ID> getBaseRepository() {

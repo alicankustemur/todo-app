@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Panel, FormGroup, Col, FormControl, Button, ControlLabel} from 'react-bootstrap';
+import PropTypes from "prop-types";
 
 import "../style.css";
 
@@ -29,7 +30,7 @@ export default class AddDepartment extends Component {
                         </Col>
                         <Col sm={10}>
                             <FormControl type="input" placeholder="Name" name="name" value={this.state.department.name}
-                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
+                                         onChange={this._handleChange} onKeyPress={this._onEnterClick}/>
                         </Col>
                     </FormGroup>
 
@@ -40,7 +41,7 @@ export default class AddDepartment extends Component {
                         <Col sm={10}>
                             <FormControl componentClass="textarea" rows="4" placeholder="Description" name="description"
                                          value={this.state.department.description}
-                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
+                                         onChange={this._handleChange} onKeyPress={this._onEnterClick}/>
                         </Col>
                     </FormGroup>
                     <FormGroup>
@@ -49,7 +50,7 @@ export default class AddDepartment extends Component {
                         </Col>
                         <Col sm={10}>
                             <select className="form-control employeesDropDown" name="employee"
-                                    value={this.state.department.employee} onChange={this.__handleChange}>
+                                    value={this.state.department.employee} onChange={this._handleChange}>
                                 {this._employeeOptions()}
                             </select>
                         </Col>
@@ -73,13 +74,13 @@ export default class AddDepartment extends Component {
         );
     }
 
-    __onEnterClick = (event) => {
+    _onEnterClick = (event) => {
         if (event.key === "Enter") {
             this.props.addOrUpdate(this.state.department);
         }
     };
 
-    __handleChange = (e) => {
+    _handleChange = (e) => {
 
         let state = {
             department: this.state.department
@@ -109,4 +110,8 @@ export default class AddDepartment extends Component {
 
 }
 
+AddDepartment.propTypes = {
+    department: PropTypes.object,
+    employees: PropTypes.array
+}
 

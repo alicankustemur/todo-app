@@ -29,7 +29,7 @@ export default class AddMeeting extends Component {
                         </Col>
                         <Col sm={10}>
                             <FormControl type="input" placeholder="Name" name="name" value={this.state.meeting.name}
-                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
+                                         onChange={this._handleChange} onKeyPress={this._onEnterClick}/>
                         </Col>
                     </FormGroup>
 
@@ -40,7 +40,7 @@ export default class AddMeeting extends Component {
                         <Col sm={10}>
                             <FormControl componentClass="textarea" rows="4" placeholder="Description" name="description"
                                          value={this.state.meeting.description}
-                                         onChange={this.__handleChange} onKeyPress={this.__onEnterClick}/>
+                                         onChange={this._handleChange} onKeyPress={this._onEnterClick}/>
                         </Col>
                     </FormGroup>
                     <FormGroup>
@@ -49,7 +49,7 @@ export default class AddMeeting extends Component {
                         </Col>
                         <Col sm={10}>
                             <select className="form-control" name="department"
-                                    value={this.state.meeting.department} onChange={this.__handleChange}>
+                                    value={this.state.meeting.department} onChange={this._handleChange}>
                                 {this._departmentOptions()}
                             </select>
                         </Col>
@@ -73,13 +73,13 @@ export default class AddMeeting extends Component {
         );
     }
 
-    __onEnterClick = (event) => {
+    _onEnterClick = (event) => {
         if (event.key === "Enter") {
             this.props.addOrUpdate(this.state.department);
         }
     };
 
-    __handleChange = (e) => {
+    _handleChange = (e) => {
         let state = {
             meeting: this.state.meeting
         };
@@ -101,6 +101,10 @@ export default class AddMeeting extends Component {
     componentWillReceiveProps = (nextProps) => {
         this.setState({meeting: nextProps.meeting, departments: nextProps.departments});
     };
+
+}
+
+AddMeeting.propTypes = {
 
 }
 
