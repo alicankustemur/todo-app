@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Panel, Table, Button} from 'react-bootstrap';
+import {Panel, Table, Button,OverlayTrigger,Popover} from 'react-bootstrap';
 
 import "../style.css";
 
@@ -33,7 +33,12 @@ export default class MeetingList extends Component {
             rows.push(<tr key={i}>
                 <td>{meeting.name}</td>
                 <td>{meeting.description}</td>
-                <td>{meeting.department.name}</td>
+                <td>
+                    <OverlayTrigger trigger={['hover', 'focus']} placement="bottom"
+                                    overlay={this._departmentInformationPopover(meeting.department)}>
+                        <Button>{meeting.department.name}</Button>
+                    </OverlayTrigger>
+                </td>
                 <td>
                     <Button bsStyle="danger" onClick={ this.props.onDelete.bind(this, meeting.id) }>Delete</Button>
                 </td>
@@ -45,6 +50,16 @@ export default class MeetingList extends Component {
 
         return rows;
     };
+
+    _departmentInformationPopover(department) {
+        return <Popover id="popover-trigger-hover-focus" title="Department Informations">
+            <strong>Name : </strong> {department.name} <br/>
+            <strong>Description : </strong> {department.description} <br/>
+            <strong>Employee Name: </strong> {department.employee.name} <br/>
+        </Popover>;
+
+    }
+
 }
 
 

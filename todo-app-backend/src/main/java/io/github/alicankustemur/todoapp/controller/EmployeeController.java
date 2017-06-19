@@ -29,6 +29,7 @@ public class EmployeeController extends AbstractBaseController<Employee, Employe
         if (employee.getIdentity().equals(willBeUpdatedEmployee.getIdentity()) || service.isNotItAvailableByIdentity(employee.getIdentity())) {
             willBeUpdatedEmployee.setIdentity(employee.getIdentity());
             willBeUpdatedEmployee.setName(employee.getName());
+            willBeUpdatedEmployee.setSurname(employee.getSurname());
             willBeUpdatedEmployee.setSalary(employee.getSalary());
 
             return ResponseEntity.ok(service.saveOrUpdate(willBeUpdatedEmployee));
