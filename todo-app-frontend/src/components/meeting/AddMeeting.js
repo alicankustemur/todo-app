@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Panel, FormGroup, FormControl, Col, Button, ControlLabel} from 'react-bootstrap';
+import PropTypes from "prop-types";
 
 import "../style.css";
 
@@ -105,7 +106,8 @@ export default class AddMeeting extends Component {
 }
 
 AddMeeting.propTypes = {
-
+    meeting: PropTypes.object,
+    departments: PropTypes.array
 }
 
 
