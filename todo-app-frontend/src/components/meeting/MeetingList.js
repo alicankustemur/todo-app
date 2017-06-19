@@ -34,7 +34,7 @@ export default class MeetingList extends Component {
                 <td>{meeting.name}</td>
                 <td>{meeting.description}</td>
                 <td>
-                    <OverlayTrigger trigger={['hover', 'focus']} placement="bottom"
+                    <OverlayTrigger trigger={['hover', 'focus']} placement="right"
                                     overlay={this._departmentInformationPopover(meeting.department)}>
                         <Button>{meeting.department.name}</Button>
                     </OverlayTrigger>

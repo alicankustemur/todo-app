@@ -46,7 +46,7 @@ export default class DepartmentList extends Component {
                 <td>{department.name}</td>
                 <td>{department.description}</td>
                 <td>
-                    <OverlayTrigger trigger={['hover', 'focus']} placement="bottom"
+                    <OverlayTrigger trigger={['hover', 'focus']} placement="right"
                                     overlay={this._employeeInformationPopover(department.employee)}>
                         <Button>{department.employee.name}</Button>
                     </OverlayTrigger>
