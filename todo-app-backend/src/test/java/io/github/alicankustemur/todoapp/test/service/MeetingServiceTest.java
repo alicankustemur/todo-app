@@ -35,47 +35,56 @@ public class MeetingServiceTest {
 	private MeetingService service;
 
 	@Test
-	public void testAddNewMeeting() throws Exception {
+	public void givenMeetingWhenAddThenReturnMeeting() throws Exception {
+
+		// Given
 		Meeting meeting = getMeeting();
 		when(repository.findOne(meeting.getId())).thenReturn(null);
 		when(repository.save(meeting)).thenReturn(meeting);
 
+		// When
 		Meeting gettingMeeting = service.saveOrUpdate(meeting);
 
+		// Then
 		assertThat(gettingMeeting.getId(), is(equalTo(meeting.getId())));
 	}
 	
 	@Test	
-	public void testRemoveMeeting() throws Exception{
+	public void givenMeetingWhenRecordIsDeletedTrueThenReturnNull() throws Exception{
+
+		// Given
 		Meeting meeting = getMeeting();
-		
 		when(repository.findOne(meeting.getId())).thenReturn(null);
 		when(repository.save(meeting)).thenReturn(meeting);
 
+		// When
 		Meeting gettingMeeting = service.saveOrUpdate(meeting);
 		gettingMeeting.setRecordIsDeleted(true);
 		gettingMeeting.setRecordUpdateTime(new Date());
 		service.saveOrUpdate(gettingMeeting);
-		
-		Meeting removedMeeting = service.get(gettingMeeting.getId());
 
+		// Then
+		Meeting removedMeeting = service.get(gettingMeeting.getId());
 		assertThat(removedMeeting, nullValue());
 		
 	}
 	
 	@Test	
-	public void testUpdateMeeting() throws Exception{
+	public void givenMeetingWhenUpdateThenReturnUpdatedMeeting() throws Exception{
+
+		// Given
 		Meeting meeting = getMeeting();
-		
 		when(repository.findOne(meeting.getId())).thenReturn(null);
 		when(repository.save(meeting)).thenReturn(meeting);
 
+		// When
 		Meeting gettingMeeting = service.saveOrUpdate(meeting);
 		gettingMeeting.setName("Meeting 2");;
 		gettingMeeting.setRecordUpdateTime(new Date());
 		Meeting updatedMeeting = service.saveOrUpdate(gettingMeeting);
-		
-		assertThat(updatedMeeting.getName(), not(equalTo("Meeting 1")));
+
+		// Then
+		assertThat(updatedMeeting.getName(), is(equalTo("Meeting 2")));
 		
 	}
 	

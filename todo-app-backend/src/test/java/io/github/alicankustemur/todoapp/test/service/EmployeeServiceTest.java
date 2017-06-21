@@ -33,46 +33,56 @@ public class EmployeeServiceTest {
 	private EmployeeService service;
 
 	@Test
-	public void testAddNewEmployee() throws Exception {
+	public void givenEmployeeWhenAddThenReturnEmployee() throws Exception {
+
+		// Given
 		Employee employee = getEmployee();
 		when(repository.findOne(employee.getId())).thenReturn(null);
 		when(repository.save(employee)).thenReturn(employee);
+
+		// When
 		Employee gettingEmployee = service.saveOrUpdate(employee);
 
+		// Then
 		assertThat(gettingEmployee.getId(), is(equalTo(employee.getId())));
 	}
 	
 	@Test	
-	public void testRemoveEmployee() throws Exception{
+	public void givenEmployeeWhenRecordIsDeletedTrueThenReturnNull() throws Exception{
+
+		// Given
 		Employee employee = getEmployee();
-		
 		when(repository.findOne(employee.getId())).thenReturn(null);
 		when(repository.save(employee)).thenReturn(employee);
 
+		// When
 		Employee gettingEmployee = service.saveOrUpdate(employee);
 		gettingEmployee.setRecordIsDeleted(true);
 		gettingEmployee.setRecordUpdateTime(new Date());
 		service.saveOrUpdate(gettingEmployee);
-		
-		Employee removedEmployee = service.get(gettingEmployee.getId());
 
+		// Then
+		Employee removedEmployee = service.get(gettingEmployee.getId());
 		assertThat(removedEmployee, nullValue());
-		
+
 	}
 	
 	@Test	
-	public void testUpdateEmployee() throws Exception{
+	public void givenEmployeeWhenUpdateThenReturnUpdatedEmployee() throws Exception{
+
+		// Given
 		Employee employee = getEmployee();
-		
 		when(repository.findOne(employee.getId())).thenReturn(null);
 		when(repository.save(employee)).thenReturn(employee);
 
+		// When
 		Employee gettingEmployee = service.saveOrUpdate(employee);
 		gettingEmployee.setName("Özcan");;
 		gettingEmployee.setRecordUpdateTime(new Date());
 		Employee updatedEmployee = service.saveOrUpdate(gettingEmployee);
-		
-		assertThat(updatedEmployee.getName(), not(equalTo("Ali Can")));
+
+		// Then
+		assertThat(updatedEmployee.getName(), is(equalTo("Özcan")));
 		
 	}
 	

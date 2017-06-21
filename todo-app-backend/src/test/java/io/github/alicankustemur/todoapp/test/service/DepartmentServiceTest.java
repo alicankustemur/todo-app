@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
@@ -34,48 +36,62 @@ public class DepartmentServiceTest {
 	private DepartmentService service;
 
 	@Test
-	public void testAddNewDepartment() throws Exception {
+	public void givenDepartmentWhenAddThenReturnDepartment() throws Exception {
+		// Given
 		Department department = getDepartment();
 		when(repository.findOne(department.getId())).thenReturn(null);
 		when(repository.save(department)).thenReturn(department);
 
+		// When
 		Department gettingDepartment = service.saveOrUpdate(department);
 
+		// Then
 		assertThat(gettingDepartment.getId(), is(equalTo(department.getId())));
+
+		verify(repository, times(1)).save(department);
 	}
 	
 	@Test	
-	public void testRemoveDepartment() throws Exception{
+	public void givenDepartmentWhenRecordIsDeletedTrueThenReturnNull() throws Exception{
+
+		// Given
 		Department department = getDepartment();
-		
 		when(repository.findOne(department.getId())).thenReturn(null);
 		when(repository.save(department)).thenReturn(department);
 
+		// When
 		Department gettingDepartment = service.saveOrUpdate(department);
 		gettingDepartment.setRecordIsDeleted(true);
 		gettingDepartment.setRecordUpdateTime(new Date());
 		service.saveOrUpdate(gettingDepartment);
-		
-		Department removedDepartment = service.get(gettingDepartment.getId());
 
+		// Then
+		Department removedDepartment = service.get(gettingDepartment.getId());
 		assertThat(removedDepartment, nullValue());
+
+		verify(repository, times(2)).save(department);
+		verify(repository, times(1)).findOne(gettingDepartment.getId());
 		
 	}
 	
 	@Test	
-	public void testUpdateDepartment() throws Exception{
+	public void givenDepartmentWhenUpdateThenReturnUpdatedDepartment() throws Exception{
+
+		// Given
 		Department department = getDepartment();
-		
 		when(repository.findOne(department.getId())).thenReturn(null);
 		when(repository.save(department)).thenReturn(department);
 
+		// When
 		Department gettingDepartment = service.saveOrUpdate(department);
 		gettingDepartment.setName("Department 2");;
 		gettingDepartment.setRecordUpdateTime(new Date());
+
+		// Then
 		Department updatedDepartment = service.saveOrUpdate(gettingDepartment);
-		
-		assertThat(updatedDepartment.getName(), not(equalTo("Department 1")));
-		
+		assertThat(updatedDepartment.getName(), is(equalTo("Department 2")));
+
+		verify(repository, times(2)).save(department);
 	}
 	
 
