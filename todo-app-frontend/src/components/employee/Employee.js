@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Col, Grid} from 'react-bootstrap';
-import toast from 'pre-toast/lib/Toast';
+import Toast from "pre-toast/lib/Toast";
 import PropTypes from "prop-types";
 
 import EmployeeList from "./EmployeeList";
@@ -83,13 +83,13 @@ export default class Employee extends Component {
             }
 
         } else if (!this.state.name) {
-            toast.info("Please enter a name");
+            Toast.info("Please enter a name");
         } else if (!this.state.surname) {
-            toast.info("Please enter a surname");
+            Toast.info("Please enter a surname");
         } else if (!this.state.salary) {
-            toast.info("Please enter a salary");
+            Toast.info("Please enter a salary");
         } else if (!this.state.identity) {
-            toast.info("Please enter a identity");
+            Toast.info("Please enter a identity");
         }
 
     };
@@ -102,7 +102,7 @@ export default class Employee extends Component {
             identity: employee.identity
         }).then(() => {
             this._list();
-            toast.success("Added new employee.");
+            Toast.success("Added new employee.");
             this._clear();
         }).catch(error => {
             this._availableEmployeeError(error);
@@ -118,7 +118,7 @@ export default class Employee extends Component {
             identity: employee.identity
         }).then(() => {
             this._list();
-            toast.success("Updated new employee.");
+            Toast.success("Updated new employee.");
             this._clear();
         }).catch(error => {
             this._availableEmployeeError(error);
@@ -139,13 +139,13 @@ export default class Employee extends Component {
         axios.delete(serviceUrl + '/delete/' + id)
             .then(() => {
                 this._list();
-                toast.success("Deleted selected employee");
+                Toast.success("Deleted selected employee");
             });
     };
 
     _availableEmployeeError = (error) => {
         if (error.response.data === "employeeAvailableError") {
-            toast.warning("There is available a employee in same identiy.");
+            Toast.warning("There is available a employee in same identiy.");
         }
     };
 
