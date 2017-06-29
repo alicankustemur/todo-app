@@ -88,5 +88,5 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "homepage": "https://alicankustemur.github.io/todo-app/tree/master/todo-app-frontend"
+  "homepage": "https://alicankustemur.github.io/todo-app"
 }
