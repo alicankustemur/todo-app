@@ -75,6 +75,7 @@ public class InitializeServiceInitProfilesImpl implements InitializeService {
 
         SpringApplication.exit(applicationContext);
 
+        System.out.println("Application is stoped.");
 
     }
 

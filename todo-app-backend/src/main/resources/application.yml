@@ -11,10 +11,11 @@ spring:
       connection-properties: useUnicode=true;characterEncoding=utf-8;
     username: root
     password: 12345
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
-      dialect: org.hibernate.dialect.MySQLDialect
-      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL5Dialect
+      ddl-auto: create
 
   jackson:
     serialization:

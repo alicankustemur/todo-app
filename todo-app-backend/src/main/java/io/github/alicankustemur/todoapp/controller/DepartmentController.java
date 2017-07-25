@@ -10,10 +10,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/department")
 public class DepartmentController extends AbstractBaseController<Department,DepartmentService> {
+
+
+    @GetMapping("/test")
+    @ResponseBody
+    public List<Department> test(){
+
+        List<Department> list = new ArrayList<Department>();
+        list.add(new Department());
+
+        return list;
+    }
+
 
 }

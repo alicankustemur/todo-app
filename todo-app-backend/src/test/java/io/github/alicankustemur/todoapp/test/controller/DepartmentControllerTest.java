@@ -77,6 +77,7 @@ public class DepartmentControllerTest {
 
     }
 
+
     // Feature : Department Operations
     // Scenario : User want to show department list
     @Test
@@ -94,6 +95,18 @@ public class DepartmentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(handler().handlerType(DepartmentController.class))
                 .andExpect(handler().methodName("list"));
+
+    }
+
+
+    @Test
+    public void test() throws Exception {
+
+        mockMvc.perform(get(APPLICATION_URL + "/test")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.*", hasSize(1)))
+                .andExpect(status().isOk())
+        .andExpect(handler().methodName("test"));
 
     }
 
